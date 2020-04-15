@@ -6,6 +6,7 @@
 package pastgameapp;
 
 import Database.Config;
+import Classes.Fixture;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
@@ -45,6 +48,8 @@ public class PastGameApp implements Runnable {
 
                 
                  getPastFixtureData();
+                 Fixture fixture = parseFixtureData();
+                 System.out.println(fixture);
             }
         } catch (SQLException | PropertyVetoException ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,7 +87,6 @@ public class PastGameApp implements Runnable {
                   }
                   //System.out.println(response.toString());
                   this.pastFixture = new JSONObject(response.toString());
-                  System.out.println(this.pastFixture);
               }
             
             
@@ -92,6 +96,42 @@ public class PastGameApp implements Runnable {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    }
+    
+    public Fixture parseFixtureData(){
+        
+        Fixture tempFixture = new Fixture();
+        
+        tempFixture.setId(pastFixture.getInt("id"));
+        tempFixture.setLeagueId(pastFixture.getInt("league_id"));
+        tempFixture.setSeasonId(pastFixture.getInt("season_id"));
+        tempFixture.setStageId(pastFixture.getInt("stage_id"));
+        //May need to make Round a static value!
+        tempFixture.setRoundId(pastFixture.getInt("round_id"));
+        tempFixture.setVenueId(pastFixture.getInt("venue_id"));
+        tempFixture.setWeatherCode(pastFixture.getString("weather_code"));
+        tempFixture.setWeatherType(pastFixture.getString("weather_type"));
+        tempFixture.setWeatherImage(pastFixture.getString("weather_report_image"));
+        tempFixture.setTemp(pastFixture.getInt("temperature"));
+        tempFixture.setStatus(pastFixture.getString("fixture_status"));
+        tempFixture.setStartTime(LocalTime.parse(pastFixture.getString("starting_time")));
+        tempFixture.setStartDate(LocalDate.parse(pastFixture.getString("starting_date")));
+        tempFixture.setTimezone(pastFixture.getString("timezone"));
+        tempFixture.setTimeMinute(pastFixture.getInt("time_minute"));
+        tempFixture.setTimeSecond(pastFixture.getInt("time_second"));
+        tempFixture.setAddedTime(pastFixture.getInt("added_time"));
+        tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
+        tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
+        tempFixture.setEvents(pastFixture.getJSONArray("events"));
+        tempFixture.setCorners(pastFixture.getJSONArray("corners"));
+        
+        //Required - Functionality for teams
+        
+        
+        
+        
+        
+        return tempFixture;
     }
     
 }

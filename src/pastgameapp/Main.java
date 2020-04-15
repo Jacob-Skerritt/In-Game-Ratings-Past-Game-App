@@ -12,7 +12,7 @@ public class Main {
         
         
         Scanner sc = new Scanner(System.in);
-        System.out.println("Welcome to the In-Game Ratings Past Fixture App\n Type Exit to close!");
+        System.out.println("Welcome to the In-Game Ratings Past Fixture App\nType Exit to close!");
         String id = "";
         String startTime;
         while(!id.toLowerCase().equals("exit")){
