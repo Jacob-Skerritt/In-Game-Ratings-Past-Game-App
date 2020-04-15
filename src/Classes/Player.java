@@ -49,7 +49,7 @@ public class Player {
     private int intercepts;
     private int clearances;
     
-    public Player(){};
+    public Player(){}
     
         public Player(int id, String firstname, String lastname, String playerName, String displayName, int teamId, char position, String type, int formaiton_position, boolean captain, int countryId, String nationality, LocalDate dateOfBirth, String image, String height, String weight, int minutesPlayed, int passAccuracy, int totalShots, int shotsOnGoal, int saves, int goalScores, int goalAssists, int totalCrosses, int crossAccuracy, int yellowcards, int redcards, int yellowRedCards, int offsides, int penSaved, int tackles, int blocks, int intercepts, int clearances) {
         this.id = id;
