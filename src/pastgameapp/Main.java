@@ -12,17 +12,28 @@ public class Main {
         
         
         Scanner sc = new Scanner(System.in);
-        System.out.println("Type Exit to close!");
-        System.out.println("Entre Fixture ID:");
-        String id = sc.nextLine();
+        System.out.println("Welcome to the In-Game Ratings Past Fixture App\n Type Exit to close!");
+        String id = "";
+        String startTime;
         while(!id.toLowerCase().equals("exit")){
             
-            PastGameApp task = new PastGameApp(id);
+            System.out.print("\nEntre Fixture ID: ");
+            id = sc.nextLine();
+            if (!id.matches("[0-9]+"))
+                continue;
+            
+            System.out.print("\nEnter Start Time: ");
+            startTime = sc.nextLine();
+            if (!startTime.matches("[0-9]+"))
+                continue;
+            
+            PastGameApp task = new PastGameApp(id, startTime);
             Thread T1 = new Thread(task);
             T1.start();
             Thread.sleep(1000);
-            System.out.println("Entre Fixture ID:");
-            id = sc.nextLine();
+
+            
+            
         }
         
     }
