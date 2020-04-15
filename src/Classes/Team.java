@@ -31,7 +31,7 @@ public class Team {
 
 
 
-    public Team(){};
+    public Team(){}
 
     public Team(int teamId, String teamName, String managerName, boolean homeTeam, String logo, boolean winning_team, int score, int penScore, int yellowcards, int redcards, String colour, String formation, int vanueId) {
         this.teamId = teamId;
