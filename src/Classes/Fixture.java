@@ -20,7 +20,7 @@ public class Fixture {
     private int seasonId;
     private int stageId;
     private int roundId;
-    private int veneueId;
+    private int venueId;
     private String weatherCode;
     private String weatherType;
     private String weatherImage;
@@ -42,13 +42,13 @@ public class Fixture {
     
     public Fixture(){}
 
-    public Fixture(int id, int leagueId, int seasonId, int stageId, int roundId, int veneueId, String weatherCode, String weatherType, String weatherImage, int temp, String status, LocalTime startTime, LocalDate startDate, String timezone, int timeMinute, int timeSecond, int addedTime, int extraTime, int injuryTime, Team homeTeam, Team awayTeam, JSONArray events, JSONArray corners) {
+    public Fixture(int id, int leagueId, int seasonId, int stageId, int roundId, int venueId, String weatherCode, String weatherType, String weatherImage, int temp, String status, LocalTime startTime, LocalDate startDate, String timezone, int timeMinute, int timeSecond, int addedTime, int extraTime, int injuryTime, Team homeTeam, Team awayTeam, JSONArray events, JSONArray corners) {
         this.id = id;
         this.leagueId = leagueId;
         this.seasonId = seasonId;
         this.stageId = stageId;
         this.roundId = roundId;
-        this.veneueId = veneueId;
+        this.venueId = venueId;
         this.weatherCode = weatherCode;
         this.weatherType = weatherType;
         this.weatherImage = weatherImage;
@@ -88,8 +88,8 @@ public class Fixture {
         return roundId;
     }
 
-    public int getVeneueId() {
-        return veneueId;
+    public int getVenueId() {
+        return venueId;
     }
 
     public String getWeatherCode() {
@@ -180,8 +180,8 @@ public class Fixture {
         this.roundId = roundId;
     }
 
-    public void setVeneueId(int veneueId) {
-        this.veneueId = veneueId;
+    public void setVenueId(int veneueId) {
+        this.venueId = veneueId;
     }
 
     public void setWeatherCode(String weatherCode) {
@@ -254,7 +254,7 @@ public class Fixture {
 
     @Override
     public String toString() {
-        return "Fixture{" + "id=" + id + ", leagueId=" + leagueId + ", seasonId=" + seasonId + ", stageId=" + stageId + ", roundId=" + roundId + ", veneueId=" + veneueId + ", weatherCode=" + weatherCode + ", weatherType=" + weatherType + ", weatherImage=" + weatherImage + ", temp=" + temp + ", status=" + status + ", startTime=" + startTime + ", startDate=" + startDate + ", timezone=" + timezone + ", timeMinute=" + timeMinute + ", timeSecond=" + timeSecond + ", addedTime=" + addedTime + ", extraTime=" + extraTime + ", injuryTime=" + injuryTime + ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", events=" + events + ", corners=" + corners + '}';
+        return "Fixture{" + "id=" + id + ", leagueId=" + leagueId + ", seasonId=" + seasonId + ", stageId=" + stageId + ", roundId=" + roundId + ", veneueId=" + venueId + ", weatherCode=" + weatherCode + ", weatherType=" + weatherType + ", weatherImage=" + weatherImage + ", temp=" + temp + ", status=" + status + ", startTime=" + startTime + ", startDate=" + startDate + ", timezone=" + timezone + ", timeMinute=" + timeMinute + ", timeSecond=" + timeSecond + ", addedTime=" + addedTime + ", extraTime=" + extraTime + ", injuryTime=" + injuryTime + ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", events=" + events + ", corners=" + corners + '}';
     }
 
     @Override
