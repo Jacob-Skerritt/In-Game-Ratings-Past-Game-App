@@ -29,8 +29,9 @@ public class PastGameApp implements Runnable {
     private int startTime;
     private JSONObject pastFixture;
     
-    public PastGameApp(String id){
+    public PastGameApp(String id, String startTime){
         this.id = id;
+        this.startTime = Integer.parseInt(startTime);
     }
 
     @Override
@@ -94,3 +95,5 @@ public class PastGameApp implements Runnable {
     }
     
 }
+
+
