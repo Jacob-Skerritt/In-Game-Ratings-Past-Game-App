@@ -131,8 +131,8 @@ public class PastGameApp implements Runnable {
         tempFixture.setAddedTime(pastFixture.getInt("added_time"));
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
         tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
-        tempFixture.setEvents(parseEventData(pastFixture.getJSONArray("events")));
-        tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners")));
+        tempFixture.setEvents(parseEventData(pastFixture.getJSONArray("events"), tempFixture.getId()));
+        tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners"), tempFixture.getId()));
         tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
         tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam")));  
         
@@ -220,7 +220,7 @@ public class PastGameApp implements Runnable {
         return players;
     }
     
-    public ArrayList<Event> parseEventData(JSONArray eventData){
+    public ArrayList<Event> parseEventData(JSONArray eventData, int fixtureId){
         ArrayList<Event> events = new ArrayList<>();
         Event tempEvent;
         
@@ -230,7 +230,7 @@ public class PastGameApp implements Runnable {
             tempEvent  = new Event();
             
             tempEvent.setId(temp.getInt("id"));
-            tempEvent.setFixtureId(temp.getInt("fixture_id"));
+            tempEvent.setFixtureId(fixtureId);
             tempEvent.setTeamId(temp.getInt("team_id"));
             tempEvent.setPlayerId(temp.getInt("player_id"));
             tempEvent.setPlayerName(temp.getString("player_name"));
@@ -253,7 +253,7 @@ public class PastGameApp implements Runnable {
         return events;
     }
     
-        public ArrayList<Corner> parseCornerData(JSONArray cornerData){
+        public ArrayList<Corner> parseCornerData(JSONArray cornerData, int fixtureId){
         ArrayList<Corner> corners = new ArrayList<>();
         Corner tempCorner;
         
@@ -266,7 +266,7 @@ public class PastGameApp implements Runnable {
             tempCorner.setMinute(temp.getInt("minute"));
             tempCorner.setTeamName(temp.getString("team_name"));
             tempCorner.setTeamId(temp.getInt("team_id"));
-            tempCorner.setFixtureId(temp.getInt("fixture_id"));
+            tempCorner.setFixtureId(fixtureId);
 
 
             
