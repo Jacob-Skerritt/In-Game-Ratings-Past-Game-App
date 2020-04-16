@@ -48,8 +48,10 @@ public class PastGameApp implements Runnable {
 
                 
                  getPastFixtureData();
-                 Fixture fixture = parseFixtureData();
+                 Fixture fixture = parseFixtureData(db);
                  System.out.println(fixture);
+            } catch (Exception ex) {
+                Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (SQLException | PropertyVetoException ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,11 +100,11 @@ public class PastGameApp implements Runnable {
         
     }
     
-    public Fixture parseFixtureData(){
+    public Fixture parseFixtureData(Connection db) throws Exception{
         
         Fixture tempFixture = new Fixture();
         
-        tempFixture.setId(pastFixture.getInt("id"));
+        tempFixture.setId(tempFixture.determineFixtureId(db));
         tempFixture.setLeagueId(pastFixture.getInt("league_id"));
         tempFixture.setSeasonId(pastFixture.getInt("season_id"));
         tempFixture.setStageId(pastFixture.getInt("stage_id"));
