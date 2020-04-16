@@ -7,6 +7,7 @@ package pastgameapp;
 
 import Database.Config;
 import Classes.Fixture;
+import Classes.Player;
 import Classes.Team;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
@@ -20,8 +21,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -152,12 +155,75 @@ public class PastGameApp implements Runnable {
         tempTeam.setColour(teamData.getString("colour"));
         tempTeam.setFormation(teamData.getString("formation"));
         tempTeam.setVenueId(teamData.getInt("venue_id"));
-        
+        tempTeam.setPlayers(parsePlayerData(teamData.getJSONArray("players")));
         //Required functionality for players
         
         
         return tempTeam;
         
+    }
+    
+    public ArrayList<Player> parsePlayerData(JSONArray playerData){
+        ArrayList<Player> players = new ArrayList<>();
+        Player tempPlayer;
+        
+        
+        for(int i = 0; i < playerData.length();i++){
+            JSONObject temp = (JSONObject) playerData.get(i);
+            tempPlayer  = new Player();
+            
+            tempPlayer.setId(temp.getInt("player_id"));
+            tempPlayer.setFirstname(temp.getString("firstname"));
+            tempPlayer.setLastname(temp.getString("lastname"));
+            tempPlayer.setPlayerName(temp.getString("player_name"));
+            tempPlayer.setDisplayName(temp.getString("display_name"));
+            tempPlayer.setTeamId(temp.getInt("team_id"));
+            tempPlayer.setPosition(temp.getString("position").charAt(0));
+            tempPlayer.setType(temp.getString("type"));
+
+            if(temp.get("formation_position").toString().equals("null"))
+                tempPlayer.setFormationPosition(-1);
+            else
+                tempPlayer.setFormationPosition(temp.getInt("formation_position"));
+            
+            tempPlayer.setCaptain(temp.getInt("captain") == 1);
+            tempPlayer.setCountryId(temp.getInt("country_id"));
+            tempPlayer.setNationality(temp.getString("nationality"));
+            tempPlayer.setDateOfBirth(LocalDate.parse(temp.getString("date_of_birth")));
+            tempPlayer.setImage(temp.getString("image"));
+            tempPlayer.setHeight(temp.get("height").toString());
+            tempPlayer.setWeight(temp.get("weight").toString());
+            tempPlayer.setMinutesPlayed(temp.getInt("minutes_played"));
+            tempPlayer.setPassAccuracy(temp.getInt("pass_accuracy"));
+            tempPlayer.setTotalShots(temp.getInt("total_shots"));
+            tempPlayer.setShotsOnGoal(temp.getInt("shots_on_goal"));
+            tempPlayer.setSaves(temp.getInt("saves"));
+            tempPlayer.setGoalScores(temp.getInt("goal_scores"));
+            tempPlayer.setGoalAssists(temp.getInt("goal_assists"));
+            tempPlayer.setTotalCrosses(temp.getInt("total_crosses"));
+            tempPlayer.setCrossAccuracy(temp.getInt("cross_accuracy"));
+            tempPlayer.setYellowcards(temp.getInt("yellowcards"));
+            tempPlayer.setRedcards(temp.getInt("redcards"));
+            tempPlayer.setYellowRedcards(temp.getInt("yellowredcards"));
+            tempPlayer.setOffsides(temp.getInt("offsides"));
+            tempPlayer.setPenSaved(temp.getInt("pen_saved"));
+            tempPlayer.setPenMissed(temp.getInt("pen_missed"));
+            tempPlayer.setTackles(temp.getInt("tackles"));
+            tempPlayer.setBlocks(temp.getInt("blocks"));
+            tempPlayer.setIntercepts(temp.getInt("intercepts"));
+            tempPlayer.setClearances(temp.getInt("clearances"));
+            
+            players.add(tempPlayer);
+            
+            
+        
+        
+        }
+        
+        
+        
+        
+        return players;
     }
     
 }

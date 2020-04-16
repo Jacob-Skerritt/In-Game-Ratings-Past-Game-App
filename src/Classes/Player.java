@@ -22,7 +22,7 @@ public class Player {
     private int teamId;
     private char position;
     private String type;
-    private int formaiton_position;
+    private int formationPosition;
     private boolean captain;
     private int countryId;
     private String nationality;
@@ -41,9 +41,10 @@ public class Player {
     private int crossAccuracy;
     private int yellowcards;
     private int redcards;
-    private int yellowRedCards;
+    private int yellowRedcards;
     private int offsides;
     private int penSaved;
+    private int penMissed;
     private int tackles;
     private int blocks;
     private int intercepts;
@@ -51,7 +52,7 @@ public class Player {
     
     public Player(){}
     
-        public Player(int id, String firstname, String lastname, String playerName, String displayName, int teamId, char position, String type, int formaiton_position, boolean captain, int countryId, String nationality, LocalDate dateOfBirth, String image, String height, String weight, int minutesPlayed, int passAccuracy, int totalShots, int shotsOnGoal, int saves, int goalScores, int goalAssists, int totalCrosses, int crossAccuracy, int yellowcards, int redcards, int yellowRedCards, int offsides, int penSaved, int tackles, int blocks, int intercepts, int clearances) {
+        public Player(int id, String firstname, String lastname, String playerName, String displayName, int teamId, char position, String type, int formationPosition, boolean captain, int countryId, String nationality, LocalDate dateOfBirth, String image, String height, String weight, int minutesPlayed, int passAccuracy, int totalShots, int shotsOnGoal, int saves, int goalScores, int goalAssists, int totalCrosses, int crossAccuracy, int yellowcards, int redcards, int yellowRedcards, int offsides, int penSaved,int pendMissed, int tackles, int blocks, int intercepts, int clearances) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -60,7 +61,7 @@ public class Player {
         this.teamId = teamId;
         this.position = position;
         this.type = type;
-        this.formaiton_position = formaiton_position;
+        this.formationPosition = formationPosition;
         this.captain = captain;
         this.countryId = countryId;
         this.nationality = nationality;
@@ -79,9 +80,10 @@ public class Player {
         this.crossAccuracy = crossAccuracy;
         this.yellowcards = yellowcards;
         this.redcards = redcards;
-        this.yellowRedCards = yellowRedCards;
+        this.yellowRedcards = yellowRedcards;
         this.offsides = offsides;
         this.penSaved = penSaved;
+        this.penMissed = penMissed;
         this.tackles = tackles;
         this.blocks = blocks;
         this.intercepts = intercepts;
@@ -153,12 +155,12 @@ public class Player {
         this.type = type;
     }
 
-    public int getFormaiton_position() {
-        return formaiton_position;
+    public int getFormationPosition() {
+        return formationPosition;
     }
 
-    public void setFormaiton_position(int formaiton_position) {
-        this.formaiton_position = formaiton_position;
+    public void setFormationPosition(int formationPosition) {
+        this.formationPosition = formationPosition;
     }
 
     public boolean isCaptain() {
@@ -305,12 +307,12 @@ public class Player {
         this.redcards = redcards;
     }
 
-    public int getYellowRedCards() {
-        return yellowRedCards;
+    public int getYellowRedcards() {
+        return yellowRedcards;
     }
 
-    public void setYellowRedCards(int yellowRedCards) {
-        this.yellowRedCards = yellowRedCards;
+    public void setYellowRedcards(int yellowRedcards) {
+        this.yellowRedcards = yellowRedcards;
     }
 
     public int getOffsides() {
@@ -329,6 +331,14 @@ public class Player {
         this.penSaved = penSaved;
     }
 
+    public int getPenMissed() {
+        return penMissed;
+    }
+
+    public void setPenMissed(int penMissed) {
+        this.penMissed = penMissed;
+    }
+    
     public int getTackles() {
         return tackles;
     }
@@ -363,7 +373,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" + "id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", playerName=" + playerName + ", displayName=" + displayName + ", teamId=" + teamId + ", position=" + position + ", type=" + type + ", formaiton_position=" + formaiton_position + ", captain=" + captain + ", countryId=" + countryId + ", nationality=" + nationality + ", dateOfBirth=" + dateOfBirth + ", image=" + image + ", height=" + height + ", weight=" + weight + ", minutesPlayed=" + minutesPlayed + ", passAccuracy=" + passAccuracy + ", totalShots=" + totalShots + ", shotsOnGoal=" + shotsOnGoal + ", saves=" + saves + ", goalScores=" + goalScores + ", goalAssists=" + goalAssists + ", totalCrosses=" + totalCrosses + ", crossAccuracy=" + crossAccuracy + ", yellowcards=" + yellowcards + ", redcards=" + redcards + ", yellowRedCards=" + yellowRedCards + ", offsides=" + offsides + ", penSaved=" + penSaved + ", tackles=" + tackles + ", blocks=" + blocks + ", intercepts=" + intercepts + ", clearances=" + clearances + '}';
+        return "Player{" + "id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", playerName=" + playerName + ", displayName=" + displayName + ", teamId=" + teamId + ", position=" + position + ", type=" + type + ", formation_position=" + formationPosition + ", captain=" + captain + ", countryId=" + countryId + ", nationality=" + nationality + ", dateOfBirth=" + dateOfBirth + ", image=" + image + ", height=" + height + ", weight=" + weight + ", minutesPlayed=" + minutesPlayed + ", passAccuracy=" + passAccuracy + ", totalShots=" + totalShots + ", shotsOnGoal=" + shotsOnGoal + ", saves=" + saves + ", goalScores=" + goalScores + ", goalAssists=" + goalAssists + ", totalCrosses=" + totalCrosses + ", crossAccuracy=" + crossAccuracy + ", yellowcards=" + yellowcards + ", redcards=" + redcards + ", yellowRedcards=" + yellowRedcards + ", offsides=" + offsides + ", penSaved=" + penSaved + ", penMissed=" + penMissed + ", tackles=" + tackles + ", blocks=" + blocks + ", intercepts=" + intercepts + ", clearances=" + clearances + '}';
     }
 
     @Override
