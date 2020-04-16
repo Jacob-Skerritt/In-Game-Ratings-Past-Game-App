@@ -8,6 +8,7 @@ package pastgameapp;
 import Classes.Corner;
 import Classes.Event;
 import Database.Config;
+import Database.DBFixture;
 import Classes.Fixture;
 import Classes.Player;
 import Classes.Team;
