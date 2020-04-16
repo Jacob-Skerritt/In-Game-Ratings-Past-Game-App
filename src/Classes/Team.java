@@ -18,14 +18,14 @@ public class Team {
     private String managerName;
     private boolean homeTeam;
     private String logo;
-    private boolean winning_team;
+    private boolean winningTeam;
     private int score;
     private int penScore;
     private int yellowcards;
     private int redcards;
     private String colour;
     private String formation;
-    private int vanueId;
+    private int venueId;
     private ArrayList<Player> players = new ArrayList<>();
 
 
@@ -33,20 +33,20 @@ public class Team {
 
     public Team(){}
 
-    public Team(int teamId, String teamName, String managerName, boolean homeTeam, String logo, boolean winning_team, int score, int penScore, int yellowcards, int redcards, String colour, String formation, int vanueId) {
+    public Team(int teamId, String teamName, String managerName, boolean homeTeam, String logo, boolean winningTeam, int score, int penScore, int yellowcards, int redcards, String colour, String formation, int venueId) {
         this.teamId = teamId;
         this.teamName = teamName;
         this.managerName = managerName;
         this.homeTeam = homeTeam;
         this.logo = logo;
-        this.winning_team = winning_team;
+        this.winningTeam = winningTeam;
         this.score = score;
         this.penScore = penScore;
         this.yellowcards = yellowcards;
         this.redcards = redcards;
         this.colour = colour;
         this.formation = formation;
-        this.vanueId = vanueId;
+        this.venueId = venueId;
     }
 
     public int getTeamId() {
@@ -73,7 +73,7 @@ public class Team {
         this.managerName = managerName;
     }
 
-    public boolean isHomeTeam() {
+    public boolean getHomeTeam() {
         return homeTeam;
     }
 
@@ -89,12 +89,12 @@ public class Team {
         this.logo = logo;
     }
 
-    public boolean isWinning_team() {
-        return winning_team;
+    public boolean getWinningTeam() {
+        return winningTeam;
     }
 
-    public void setWinning_team(boolean winning_team) {
-        this.winning_team = winning_team;
+    public void setWinningTeam(boolean winningTeam) {
+        this.winningTeam = winningTeam;
     }
 
     public int getScore() {
@@ -145,12 +145,12 @@ public class Team {
         this.formation = formation;
     }
 
-    public int getVanueId() {
-        return vanueId;
+    public int getVenueId() {
+        return venueId;
     }
 
-    public void setVanueId(int vanueId) {
-        this.vanueId = vanueId;
+    public void setVenueId(int vanueId) {
+        this.venueId = vanueId;
     }
 
     public ArrayList<Player> getPlayers() {
@@ -163,7 +163,7 @@ public class Team {
 
     @Override
     public String toString() {
-        return "Team{" + "teamId=" + teamId + ", teamName=" + teamName + ", managerName=" + managerName + ", homeTeam=" + homeTeam + ", logo=" + logo + ", winning_team=" + winning_team + ", score=" + score + ", penScore=" + penScore + ", yellowcards=" + yellowcards + ", redcards=" + redcards + ", colour=" + colour + ", formation=" + formation + ", vanueId=" + vanueId + ", players=" + players + '}';
+        return "Team{" + "teamId=" + teamId + ", teamName=" + teamName + ", managerName=" + managerName + ", homeTeam=" + homeTeam + ", logo=" + logo + ", winning_team=" + winningTeam + ", score=" + score + ", penScore=" + penScore + ", yellowcards=" + yellowcards + ", redcards=" + redcards + ", colour=" + colour + ", formation=" + formation + ", vanueId=" + venueId + ", players=" + players + '}';
     }
 
     @Override

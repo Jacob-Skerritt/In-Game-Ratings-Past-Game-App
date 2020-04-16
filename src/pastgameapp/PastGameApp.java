@@ -7,6 +7,7 @@ package pastgameapp;
 
 import Database.Config;
 import Classes.Fixture;
+import Classes.Team;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -87,7 +88,7 @@ public class PastGameApp implements Runnable {
                   while ((responseLine = br.readLine()) != null) {
                       response.append(responseLine.trim());
                   }
-                  //System.out.println(response.toString());
+
                   this.pastFixture = new JSONObject(response.toString());
               }
             
@@ -126,14 +127,37 @@ public class PastGameApp implements Runnable {
         tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
         tempFixture.setEvents(pastFixture.getJSONArray("events"));
         tempFixture.setCorners(pastFixture.getJSONArray("corners"));
+        tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
+        tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam")));
         
         //Required - Functionality for teams
         
-        
-        
-        
-        
+
         return tempFixture;
+    }
+    
+    public Team parseTeamData(JSONObject teamData){
+        Team tempTeam = new Team();
+        
+        tempTeam.setTeamId(teamData.getInt("team_id"));
+        tempTeam.setTeamName(teamData.getString("team_name"));
+        tempTeam.setManagerName(teamData.getString("manager"));
+        tempTeam.setHomeTeam(teamData.getInt("home_team") == 1);
+        tempTeam.setLogo(teamData.getString("logo"));
+        tempTeam.setWinningTeam(teamData.getInt("winning_team") == 1);
+        tempTeam.setScore(teamData.getInt("score"));
+        tempTeam.setPenScore(teamData.getInt("pen_score"));
+        tempTeam.setYellowcards(teamData.getInt("yellowcards"));
+        tempTeam.setRedcards(teamData.getInt("redcards"));
+        tempTeam.setColour(teamData.getString("colour"));
+        tempTeam.setFormation(teamData.getString("formation"));
+        tempTeam.setVenueId(teamData.getInt("venue_id"));
+        
+        //Required functionality for players
+        
+        
+        return tempTeam;
+        
     }
     
 }
