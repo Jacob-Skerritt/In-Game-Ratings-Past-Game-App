@@ -5,6 +5,7 @@
  */
 package pastgameapp;
 
+import Classes.Event;
 import Database.Config;
 import Classes.Fixture;
 import Classes.Player;
@@ -128,14 +129,11 @@ public class PastGameApp implements Runnable {
         tempFixture.setAddedTime(pastFixture.getInt("added_time"));
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
         tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
-        tempFixture.setEvents(pastFixture.getJSONArray("events"));
+        tempFixture.setEvents(parseEventData(pastFixture.getJSONArray("events")));
         tempFixture.setCorners(pastFixture.getJSONArray("corners"));
         tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
-        tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam")));
+        tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam")));  
         
-        //Required - Functionality for teams
-        
-
         return tempFixture;
     }
     
@@ -215,15 +213,42 @@ public class PastGameApp implements Runnable {
             
             players.add(tempPlayer);
             
-            
-        
-        
         }
         
-        
-        
-        
         return players;
+    }
+    
+    public ArrayList<Event> parseEventData(JSONArray eventData){
+        ArrayList<Event> events = new ArrayList<>();
+        Event tempEvent;
+        
+        
+        for(int i = 0; i < eventData.length();i++){
+            JSONObject temp = (JSONObject) eventData.get(i);
+            tempEvent  = new Event();
+            
+            tempEvent.setId(temp.getInt("id"));
+            tempEvent.setFixtureId(temp.getInt("fixture_id"));
+            tempEvent.setTeamId(temp.getInt("team_id"));
+            tempEvent.setPlayerId(temp.getInt("player_id"));
+            tempEvent.setPlayerName(temp.getString("player_name"));
+            
+            if(temp.get("related_player_id").toString().equals("null"))
+                tempEvent.setRelatedPlayerId(-1);
+            else
+                tempEvent.setRelatedPlayerId(temp.getInt("related_player_id"));
+            
+            
+            tempEvent.setEventId(temp.getInt("event_id"));
+            tempEvent.setEventType(temp.getString("event_type"));
+            tempEvent.setMinute(temp.getInt("minute"));
+
+            
+            events.add(tempEvent);
+            
+        }
+     
+        return events;
     }
     
 }

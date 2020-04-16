@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import org.json.JSONArray;
 
 /**
@@ -40,13 +41,13 @@ public class Fixture {
     private int injuryTime;
     private Team homeTeam;
     private Team awayTeam;
-    private JSONArray events;
+    private ArrayList<Event> events;
     private JSONArray corners;
     
     
     public Fixture(){}
 
-    public Fixture(int id, int leagueId, int seasonId, int stageId, int roundId, int venueId, String weatherCode, String weatherType, String weatherImage, int temp, String status, LocalTime startTime, LocalDate startDate, String timezone, int timeMinute, int timeSecond, int addedTime, int extraTime, int injuryTime, Team homeTeam, Team awayTeam, JSONArray events, JSONArray corners) {
+    public Fixture(int id, int leagueId, int seasonId, int stageId, int roundId, int venueId, String weatherCode, String weatherType, String weatherImage, int temp, String status, LocalTime startTime, LocalDate startDate, String timezone, int timeMinute, int timeSecond, int addedTime, int extraTime, int injuryTime, Team homeTeam, Team awayTeam, ArrayList<Event> events, JSONArray corners) {
         this.id = id;
         this.leagueId = leagueId;
         this.seasonId = seasonId;
@@ -156,7 +157,7 @@ public class Fixture {
         return awayTeam;
     }
 
-    public JSONArray getEvents() {
+    public ArrayList<Event> getEvents() {
         return events;
     }
 
@@ -248,7 +249,7 @@ public class Fixture {
         this.awayTeam = awayTeam;
     }
 
-    public void setEvents(JSONArray events) {
+    public void setEvents(ArrayList<Event> events) {
         this.events = events;
     }
 
