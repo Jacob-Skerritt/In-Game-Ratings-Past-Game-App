@@ -5,6 +5,7 @@
  */
 package pastgameapp;
 
+import Classes.Corner;
 import Classes.Event;
 import Database.Config;
 import Classes.Fixture;
@@ -130,7 +131,7 @@ public class PastGameApp implements Runnable {
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
         tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
         tempFixture.setEvents(parseEventData(pastFixture.getJSONArray("events")));
-        tempFixture.setCorners(pastFixture.getJSONArray("corners"));
+        tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners")));
         tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
         tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam")));  
         
@@ -249,6 +250,30 @@ public class PastGameApp implements Runnable {
         }
      
         return events;
+    }
+    
+        public ArrayList<Corner> parseCornerData(JSONArray cornerData){
+        ArrayList<Corner> corners = new ArrayList<>();
+        Corner tempCorner;
+        
+        
+        for(int i = 0; i < cornerData.length();i++){
+            JSONObject temp = (JSONObject) cornerData.get(i);
+            tempCorner  = new Corner();
+            
+            tempCorner.setId(temp.getInt("id"));
+            tempCorner.setMinute(temp.getInt("minute"));
+            tempCorner.setTeamName(temp.getString("team_name"));
+            tempCorner.setTeamId(temp.getInt("team_id"));
+            tempCorner.setFixtureId(temp.getInt("fixture_id"));
+
+
+            
+            corners.add(tempCorner);
+            
+        }
+     
+        return corners;
     }
     
 }

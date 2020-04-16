@@ -42,12 +42,12 @@ public class Fixture {
     private Team homeTeam;
     private Team awayTeam;
     private ArrayList<Event> events;
-    private JSONArray corners;
+    private ArrayList<Corner> corners;
     
     
     public Fixture(){}
 
-    public Fixture(int id, int leagueId, int seasonId, int stageId, int roundId, int venueId, String weatherCode, String weatherType, String weatherImage, int temp, String status, LocalTime startTime, LocalDate startDate, String timezone, int timeMinute, int timeSecond, int addedTime, int extraTime, int injuryTime, Team homeTeam, Team awayTeam, ArrayList<Event> events, JSONArray corners) {
+    public Fixture(int id, int leagueId, int seasonId, int stageId, int roundId, int venueId, String weatherCode, String weatherType, String weatherImage, int temp, String status, LocalTime startTime, LocalDate startDate, String timezone, int timeMinute, int timeSecond, int addedTime, int extraTime, int injuryTime, Team homeTeam, Team awayTeam, ArrayList<Event> events, ArrayList<Corner> corners) {
         this.id = id;
         this.leagueId = leagueId;
         this.seasonId = seasonId;
@@ -161,7 +161,7 @@ public class Fixture {
         return events;
     }
 
-    public JSONArray getCorners() {
+    public ArrayList<Corner> getCorners() {
         return corners;
     }
 
@@ -253,7 +253,7 @@ public class Fixture {
         this.events = events;
     }
 
-    public void setCorners(JSONArray corners) {
+    public void setCorners(ArrayList<Corner> corners) {
         this.corners = corners;
     }
 
