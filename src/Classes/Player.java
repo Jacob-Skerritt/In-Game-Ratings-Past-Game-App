@@ -52,7 +52,7 @@ public class Player {
     
     public Player(){}
     
-        public Player(int id, String firstname, String lastname, String playerName, String displayName, int teamId, char position, String type, int formationPosition, boolean captain, int countryId, String nationality, LocalDate dateOfBirth, String image, String height, String weight, int minutesPlayed, int passAccuracy, int totalShots, int shotsOnGoal, int saves, int goalScores, int goalAssists, int totalCrosses, int crossAccuracy, int yellowcards, int redcards, int yellowRedcards, int offsides, int penSaved,int pendMissed, int tackles, int blocks, int intercepts, int clearances) {
+        public Player(int id, String firstname, String lastname, String playerName, String displayName, int teamId, char position, String type, int formationPosition, boolean captain, int countryId, String nationality, LocalDate dateOfBirth, String image, String height, String weight, int minutesPlayed, int passAccuracy, int totalShots, int shotsOnGoal, int saves, int goalScores, int goalAssists, int totalCrosses, int crossAccuracy, int yellowcards, int redcards, int yellowRedcards, int offsides, int penSaved,int penMissed, int tackles, int blocks, int intercepts, int clearances) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;

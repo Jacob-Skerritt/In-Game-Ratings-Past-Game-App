@@ -12,6 +12,7 @@ import Database.DBFixture;
 import Classes.Fixture;
 import Classes.Player;
 import Classes.Team;
+import Database.DBPlayers;
 import Database.DBTeams;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
@@ -55,34 +56,22 @@ public class PastGameApp implements Runnable {
             try (Connection db = database.getDatabaseConnection()) {
 
                 
-                 getPastFixtureData();
-                 Fixture fixture = parseFixtureData(db);
-                 System.out.println("Before Reverse");
-                 System.out.println("home team");
-                 outputPlayers(fixture.getHomeTeam().getPlayers());
-                 System.out.println("away team");
-                 outputPlayers(fixture.getAwayTeam().getPlayers());
-                 reverseSubstitutions(fixture);
-                 System.out.println("\n\nAfter Reverse");
-                 System.out.println("home team");
-                 outputPlayers(fixture.getHomeTeam().getPlayers());
-                 System.out.println("away team");
-                 outputPlayers(fixture.getAwayTeam().getPlayers());
-                 
-                 
-                 System.out.println("Before Score Change");
-                 System.out.println("Home Team Score: " + fixture.getHomeTeam().getScore());
-                 System.out.println("Away Team Score: " + fixture.getAwayTeam().getScore());
-                 reverseScores(fixture);
-                 System.out.println("After Score Change");
-                 System.out.println("Home Team Score: " + fixture.getHomeTeam().getScore());
-                 System.out.println("Away Team Score: " + fixture.getAwayTeam().getScore());
-                 
-                 
-                  DBFixture.addFixture(db, fixture);
+                getPastFixtureData();
+                Fixture fixture = parseFixtureData(db);
+
+                reverseScores(fixture);
+
+                DBFixture.addFixture(db, fixture);
                   
-                  DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
-                  DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
+                DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
+                DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
+                  
+                for (Player player : fixture.getHomeTeam().getPlayers()) {
+                 DBPlayers.addPlayer(db,  player,fixture.getId());
+                }
+                for (Player player : fixture.getAwayTeam().getPlayers()) {
+                 DBPlayers.addPlayer(db,  player,fixture.getId());
+                }
             } catch (Exception ex) {
                 Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
             }
