@@ -56,7 +56,17 @@ public class PastGameApp implements Runnable {
                 
                  getPastFixtureData();
                  Fixture fixture = parseFixtureData(db);
-                 System.out.println(fixture);
+                 System.out.println("Before Reverse");
+                 System.out.println("home team");
+                 outputPlayers(fixture.getHomeTeam().getPlayers());
+                 System.out.println("away team");
+                 outputPlayers(fixture.getAwayTeam().getPlayers());
+                 reverseSubstitutions(fixture);
+                 System.out.println("\n\nAfter Reverse");
+                 System.out.println("home team");
+                 outputPlayers(fixture.getHomeTeam().getPlayers());
+                 System.out.println("away team");
+                 outputPlayers(fixture.getAwayTeam().getPlayers());
             } catch (Exception ex) {
                 Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -66,6 +76,16 @@ public class PastGameApp implements Runnable {
         
         
 
+        
+    }
+    
+    public void outputPlayers(ArrayList<Player> players){
+        
+        for(int i = 0;i < players.size();i++){
+            
+            System.out.println("Player Name: " + players.get(i).getPlayerName() + " Position: " + players.get(i).getFormationPosition());
+                
+            }
         
     }
     
@@ -111,7 +131,7 @@ public class PastGameApp implements Runnable {
         
         Fixture tempFixture = new Fixture();
         
-        tempFixture.setId(tempFixture.determineFixtureId(db));
+        tempFixture.setId(DBFixture.determineFixtureId(db));
         tempFixture.setLeagueId(pastFixture.getInt("league_id"));
         tempFixture.setSeasonId(pastFixture.getInt("season_id"));
         tempFixture.setStageId(pastFixture.getInt("stage_id"));
@@ -122,7 +142,7 @@ public class PastGameApp implements Runnable {
         tempFixture.setWeatherType(pastFixture.getString("weather_type"));
         tempFixture.setWeatherImage(pastFixture.getString("weather_report_image"));
         tempFixture.setTemp(pastFixture.getInt("temperature"));
-        tempFixture.setStatus(pastFixture.getString("fixture_status"));
+        tempFixture.setStatus("LIVE");
         tempFixture.setStartTime(LocalTime.parse(pastFixture.getString("starting_time")));
         tempFixture.setStartDate(LocalDate.parse(pastFixture.getString("starting_date")));
         tempFixture.setTimezone(pastFixture.getString("timezone"));
@@ -276,7 +296,54 @@ public class PastGameApp implements Runnable {
      
         return corners;
     }
-    
+        
+        public void reverseSubstitutions(Fixture fixture){
+            
+            Event tempEvent;
+            Player tempPlayer1;
+            Player tempPlayer2;
+            int position;
+            
+            for(int i = fixture.getEvents().size();i > 0;i--){
+                tempEvent = fixture.getEvents().get(i-1);
+                if(tempEvent.getEventId() == 2 && tempEvent.getMinute() >= startTime){
+                   tempPlayer1 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getPlayerId());
+                   tempPlayer2 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getRelatedPlayerId());
+                   
+                   position = tempPlayer1.getFormationPosition();
+                   tempPlayer1.setFormationPosition(-1);
+                   tempPlayer2.setFormationPosition(position);
+                }
+                
+            }
+            
+        }
+        
+        public Team getTeam(Fixture fixture, int teamId){
+            
+           if(fixture.getHomeTeam().getTeamId() == teamId)
+               return fixture.getHomeTeam();
+           else
+               return fixture.getAwayTeam();
+
+        }
+        
+        public Player getPlayer(Team team, int playerId){
+            
+            Player tempPlayer;
+            for(int i = 0;i < team.getPlayers().size();i++){
+                tempPlayer = team.getPlayers().get(i);
+                
+                if(tempPlayer.getId() == playerId)
+                    return team.getPlayers().get(i);
+                
+            }
+            
+            return new Player();
+            
+        }
+        
+
 }
 
 
