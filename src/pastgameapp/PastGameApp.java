@@ -67,6 +67,15 @@ public class PastGameApp implements Runnable {
                  outputPlayers(fixture.getHomeTeam().getPlayers());
                  System.out.println("away team");
                  outputPlayers(fixture.getAwayTeam().getPlayers());
+                 
+                 
+                 System.out.println("Before Score Change");
+                 System.out.println("Home Team Score: " + fixture.getHomeTeam().getScore());
+                 System.out.println("Away Team Score: " + fixture.getAwayTeam().getScore());
+                 reverseScores(fixture);
+                 System.out.println("After Score Change");
+                 System.out.println("Home Team Score: " + fixture.getHomeTeam().getScore());
+                 System.out.println("Away Team Score: " + fixture.getAwayTeam().getScore());
             } catch (Exception ex) {
                 Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -146,8 +155,8 @@ public class PastGameApp implements Runnable {
         tempFixture.setStartTime(LocalTime.parse(pastFixture.getString("starting_time")));
         tempFixture.setStartDate(LocalDate.parse(pastFixture.getString("starting_date")));
         tempFixture.setTimezone(pastFixture.getString("timezone"));
-        tempFixture.setTimeMinute(pastFixture.getInt("time_minute"));
-        tempFixture.setTimeSecond(pastFixture.getInt("time_second"));
+        tempFixture.setTimeMinute(this.startTime);
+        tempFixture.setTimeSecond(0);
         tempFixture.setAddedTime(pastFixture.getInt("added_time"));
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
         tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
@@ -297,51 +306,69 @@ public class PastGameApp implements Runnable {
         return corners;
     }
         
-        public void reverseSubstitutions(Fixture fixture){
-            
-            Event tempEvent;
-            Player tempPlayer1;
-            Player tempPlayer2;
-            int position;
-            
-            for(int i = fixture.getEvents().size();i > 0;i--){
-                tempEvent = fixture.getEvents().get(i-1);
-                if(tempEvent.getEventId() == 2 && tempEvent.getMinute() >= startTime){
-                   tempPlayer1 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getPlayerId());
-                   tempPlayer2 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getRelatedPlayerId());
-                   
-                   position = tempPlayer1.getFormationPosition();
-                   tempPlayer1.setFormationPosition(-1);
-                   tempPlayer2.setFormationPosition(position);
-                }
-                
+    public void reverseSubstitutions(Fixture fixture){
+
+        Event tempEvent;
+        Player tempPlayer1;
+        Player tempPlayer2;
+        int position;
+
+        for(int i = fixture.getEvents().size();i > 0;i--){
+            tempEvent = fixture.getEvents().get(i-1);
+            if(tempEvent.getEventId() == 2 && tempEvent.getMinute() > startTime){
+               tempPlayer1 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getPlayerId());
+               tempPlayer2 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getRelatedPlayerId());
+
+               position = tempPlayer1.getFormationPosition();
+               tempPlayer1.setFormationPosition(-1);
+               tempPlayer2.setFormationPosition(position);
             }
-            
-        }
-        
-        public Team getTeam(Fixture fixture, int teamId){
-            
-           if(fixture.getHomeTeam().getTeamId() == teamId)
-               return fixture.getHomeTeam();
-           else
-               return fixture.getAwayTeam();
 
         }
-        
-        public Player getPlayer(Team team, int playerId){
-            
-            Player tempPlayer;
-            for(int i = 0;i < team.getPlayers().size();i++){
-                tempPlayer = team.getPlayers().get(i);
-                
-                if(tempPlayer.getId() == playerId)
-                    return team.getPlayers().get(i);
-                
-            }
-            
-            return new Player();
-            
+
+    }
+
+    public Team getTeam(Fixture fixture, int teamId){
+
+       if(fixture.getHomeTeam().getTeamId() == teamId)
+           return fixture.getHomeTeam();
+       else
+           return fixture.getAwayTeam();
+
+    }
+
+    public Player getPlayer(Team team, int playerId){
+
+        Player tempPlayer;
+        for(int i = 0;i < team.getPlayers().size();i++){
+            tempPlayer = team.getPlayers().get(i);
+
+            if(tempPlayer.getId() == playerId)
+                return team.getPlayers().get(i);
+
         }
+
+        return new Player();
+
+    }
+    
+    public void reverseScores(Fixture fixture){
+            
+        Event tempEvent;
+
+        Team tempTeam;
+        for(int i = fixture.getEvents().size();i > 0;i--){
+            tempEvent = fixture.getEvents().get(i-1);
+            if(tempEvent.getEventId() == 1 && tempEvent.getMinute() > startTime){
+               tempTeam = getTeam(fixture, tempEvent.getTeamId());
+               tempTeam.setScore(tempTeam.getScore() - 1);
+
+
+            }
+
+        }
+
+    }
         
 
 }
