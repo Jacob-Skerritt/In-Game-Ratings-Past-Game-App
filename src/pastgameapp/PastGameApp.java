@@ -76,6 +76,9 @@ public class PastGameApp implements Runnable {
                  System.out.println("After Score Change");
                  System.out.println("Home Team Score: " + fixture.getHomeTeam().getScore());
                  System.out.println("Away Team Score: " + fixture.getAwayTeam().getScore());
+                 
+                 
+                  DBFixture.addFixture(db, fixture);
             } catch (Exception ex) {
                 Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -163,7 +166,9 @@ public class PastGameApp implements Runnable {
         tempFixture.setEvents(parseEventData(pastFixture.getJSONArray("events"), tempFixture.getId()));
         tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners"), tempFixture.getId()));
         tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
-        tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam")));  
+        tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam"))); 
+        
+       
         
         return tempFixture;
     }
