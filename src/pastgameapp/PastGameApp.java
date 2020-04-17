@@ -12,6 +12,7 @@ import Database.DBFixture;
 import Classes.Fixture;
 import Classes.Player;
 import Classes.Team;
+import Database.DBTeams;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,6 +80,9 @@ public class PastGameApp implements Runnable {
                  
                  
                   DBFixture.addFixture(db, fixture);
+                  
+                  DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
+                  DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
             } catch (Exception ex) {
                 Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
             }
