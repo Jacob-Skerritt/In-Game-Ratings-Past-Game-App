@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 public class DBFixture {
     
-        public int determineFixtureId(Connection db) throws Exception{
+        public static int determineFixtureId(Connection db) throws Exception{
       
         int newId = -1;
         try {
