@@ -12,6 +12,7 @@ import Database.DBFixture;
 import Classes.Fixture;
 import Classes.Player;
 import Classes.Team;
+import Database.DBEvents;
 import Database.DBPlayers;
 import Database.DBTeams;
 import java.beans.PropertyVetoException;
@@ -71,6 +72,12 @@ public class PastGameApp implements Runnable {
                 }
                 for (Player player : fixture.getAwayTeam().getPlayers()) {
                  DBPlayers.addPlayer(db,  player,fixture.getId());
+                }
+                
+                for (Event event : fixture.getEvents()) {
+                    if(event.getMinute() <= startTime){
+                        DBEvents.addEvent(db, event);
+                    }
                 }
             } catch (Exception ex) {
                 Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -156,7 +163,7 @@ public class PastGameApp implements Runnable {
         tempFixture.setAddedTime(pastFixture.getInt("added_time"));
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
         tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
-        tempFixture.setEvents(parseEventData(pastFixture.getJSONArray("events"), tempFixture.getId()));
+        tempFixture.setEvents(parseEventData(db,pastFixture.getJSONArray("events"), tempFixture.getId()));
         tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners"), tempFixture.getId()));
         tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
         tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam"))); 
@@ -247,23 +254,22 @@ public class PastGameApp implements Runnable {
         return players;
     }
     
-    public ArrayList<Event> parseEventData(JSONArray eventData, int fixtureId){
+    public ArrayList<Event> parseEventData(Connection db,JSONArray eventData, int fixtureId) throws Exception{
         ArrayList<Event> events = new ArrayList<>();
         Event tempEvent;
         
-        
+        int eventId = DBEvents.determineEventId(db);
         for(int i = 0; i < eventData.length();i++){
             JSONObject temp = (JSONObject) eventData.get(i);
             tempEvent  = new Event();
-            
-            tempEvent.setId(temp.getInt("id"));
+            tempEvent.setId(eventId);
             tempEvent.setFixtureId(fixtureId);
             tempEvent.setTeamId(temp.getInt("team_id"));
             tempEvent.setPlayerId(temp.getInt("player_id"));
             tempEvent.setPlayerName(temp.getString("player_name"));
             
             if(temp.get("related_player_id").toString().equals("null"))
-                tempEvent.setRelatedPlayerId(-1);
+                tempEvent.setRelatedPlayerId(temp.getInt("player_id"));
             else
                 tempEvent.setRelatedPlayerId(temp.getInt("related_player_id"));
             
@@ -274,6 +280,7 @@ public class PastGameApp implements Runnable {
 
             
             events.add(tempEvent);
+            eventId++;
             
         }
      

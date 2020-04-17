@@ -8,6 +8,7 @@ package Database;
 import Classes.Player;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -88,6 +89,57 @@ public class DBPlayers {
             preparedStmt.execute();
         }catch (SQLException ex) {
 
+        }
+    }
+    
+    //method to get a players position in a formation based on the paramters fixture id and player id
+    public static int getPlayerFormationPosition(Connection db,int playerId, int fixtureId){
+        System.out.println("inside get Position");
+        System.out.println("Player id: " + playerId + " fixture id: " + fixtureId);
+        try {
+            // the mysql insert statement
+            String query = "SELECT formation_position from fixtures_players where player_id = ? AND fixture_id = ?";
+
+            try (PreparedStatement preparedStmt = db.prepareStatement(query)) {
+                preparedStmt.setInt(1, playerId);
+                preparedStmt.setInt(2, fixtureId);
+                
+                // execute the query, and get a java resultset
+                ResultSet rs = preparedStmt.executeQuery();
+                
+                // iterate through the java resultset
+                
+                
+                while (rs.next()) {               
+                    return rs.getInt("formation_position");
+                    
+                }
+            }
+                
+            
+            
+        } catch (SQLException ex) {
+        }
+        return 0;
+    }
+    
+    //Method to update a plyaers formation for a particular fixture
+    public static void setPlayerFormationPosition(Connection db,int playerId, int fixtureId, int position){
+        try {
+            // the mysql insert statement
+            String query = "update fixtures_players set formation_position = ? where player_id = ? and fixture_id = ?";
+
+            PreparedStatement preparedStmt = db.prepareStatement(query);
+            if(position >0)
+                preparedStmt.setInt(1, position);
+            else
+                preparedStmt.setNull(1, java.sql.Types.VARCHAR);
+            preparedStmt.setInt(2, playerId);
+            preparedStmt.setInt(3, fixtureId);
+
+             preparedStmt.execute();
+            
+        } catch (SQLException ex) {
         }
     }
     
