@@ -5,10 +5,13 @@
  */
 package Database;
 
+import Classes.Fixture;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 
 /**
  *
@@ -55,5 +58,54 @@ public class DBFixture {
         
        
     }
+        
+        public static void addFixture(Connection db, Fixture fixture){
+            
+            
+            try {
+                        // the mysql insert statement
+                        String query = " insert into fixtures(id, league_id, season_id, stage_id, round_id, venue_id, weather_code, weather_type, weather_report_image, temperature, fixture_status, starting_time, starting_date, timezone, time_minute, time_second, added_time, extra_time, injury_time)"
+                                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        // create the mysql insert preparedstatement
+                        PreparedStatement preparedStmt = db.prepareStatement(query);
+                        preparedStmt.setInt(1, fixture.getId());
+                        preparedStmt.setInt(2, fixture.getLeagueId());
+                        preparedStmt.setInt(3, fixture.getSeasonId());
+                        preparedStmt.setInt(4, fixture.getStageId());
+                        preparedStmt.setInt(5, fixture.getRoundId());
+                        
+                        preparedStmt.setInt(6, fixture.getVenueId());
+                        
+                        
+
+                        preparedStmt.setString(7, fixture.getWeatherCode());
+                        preparedStmt.setString(8, fixture.getWeatherType());
+
+                        preparedStmt.setString(9, fixture.getWeatherImage());
+                        preparedStmt.setInt(10, fixture.getTemp());
+                        
+
+                        preparedStmt.setString(11, fixture.getStatus());
+                        preparedStmt.setTime(12, Time.valueOf(fixture.getStartTime()));
+                        preparedStmt.setDate(13, Date.valueOf(fixture.getStartDate()));
+                        preparedStmt.setString(14, fixture.getTimezone());
+
+                        preparedStmt.setInt(15, fixture.getTimeMinute());
+                        preparedStmt.setInt(16, fixture.getTimeSecond());
+                        preparedStmt.setInt(17, fixture.getAddedTime());
+                        preparedStmt.setInt(18, fixture.getExtraTime());
+                        preparedStmt.setInt(19, fixture.getInjuryTime());
+                        // execute the preparedstatement
+                        preparedStmt.execute();
+                         
+
+                    } catch (SQLException ex) {
+
+                    }finally{
+            
+                    }
+            
+            
+        }
     
 }
