@@ -19,11 +19,11 @@ import java.sql.Time;
  */
 public class DBFixture {
     
-        public static int determineFixtureId(Connection db) throws Exception{
-      
+    public static int determineFixtureId(Connection db) throws Exception{
+
         int newId = -1;
         try {
-              
+
             // the mysql insert statement
             String query = " SELECT COUNT(*) from fixtures where id < 1000";
 
@@ -43,17 +43,17 @@ public class DBFixture {
 
                 }
                 preparedStmt.close();
-                
+
             }
-            
+
             if(newId == -1)
                 throw new Exception("Invalid, unable to generate fixture id");
-             
-            
+
+
         } catch (SQLException ex) {
             System.out.println(ex);
         }
-         
+
         return newId;
         
        
