@@ -78,8 +78,6 @@ public class PastGameApp extends TimerTask {
                 this.fixture = parseFixtureData(db);
                
 
-               reverseScores(fixture);
-
                 DBFixture.addFixture(db, fixture);
                   
                 DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
@@ -210,7 +208,7 @@ public class PastGameApp extends TimerTask {
         tempTeam.setHomeTeam(teamData.getInt("home_team") == 1);
         tempTeam.setLogo(teamData.getString("logo"));
         tempTeam.setWinningTeam(teamData.getInt("winning_team") == 1);
-        tempTeam.setScore(teamData.getInt("score"));
+        tempTeam.setScore(0);
         tempTeam.setPenScore(teamData.getInt("pen_score"));
         tempTeam.setYellowcards(teamData.getInt("yellowcards"));
         tempTeam.setRedcards(teamData.getInt("redcards"));
@@ -384,26 +382,6 @@ public class PastGameApp extends TimerTask {
         return new Player();
 
     }
-    
-    public void reverseScores(Fixture fixture){
-            
-        Event tempEvent;
-
-        Team tempTeam;
-        for(int i = fixture.getEvents().size();i > 0;i--){
-            tempEvent = fixture.getEvents().get(i-1);
-            if(tempEvent.getEventId() == 1 && tempEvent.getMinute() > startTime){
-               tempTeam = getTeam(fixture, tempEvent.getTeamId());
-               tempTeam.setScore(tempTeam.getScore() - 1);
-
-
-            }
-
-        }
-
-    }
-        
-
 }
 
 

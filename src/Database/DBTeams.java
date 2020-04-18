@@ -8,6 +8,7 @@ package Database;
 import Classes.Team;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -91,6 +92,51 @@ public class DBTeams {
         }catch (SQLException ex) {
 
         }
+    }
+    
+    public static void updateScore(Connection db ,int teamId, int fixtureId, int score){
+        try {
+            // the mysql insert statement
+            String query = "update fixtures_teams set score = ? where team_id = ? and fixture_id = ?";
+
+            PreparedStatement preparedStmt = db.prepareStatement(query);
+            System.out.println("The score is "+ score);
+            preparedStmt.setInt(1, score+1);
+            preparedStmt.setInt(2, teamId);
+            preparedStmt.setInt(3, fixtureId);
+
+             preparedStmt.execute();
+            
+        } catch (SQLException ex) {
+        }
+    }
+    
+      public static int getScore(Connection db,int teamId, int fixtureId){
+        try {
+            // the mysql insert statement
+            String query = "SELECT score from fixtures_teams where team_id = ? AND fixture_id = ?";
+
+            try (PreparedStatement preparedStmt = db.prepareStatement(query)) {
+                preparedStmt.setInt(1, teamId);
+                preparedStmt.setInt(2, fixtureId);
+                
+                // execute the query, and get a java resultset
+                ResultSet rs = preparedStmt.executeQuery();
+                
+                // iterate through the java resultset
+                
+                
+                while (rs.next()) {               
+                    return rs.getInt("score");
+                    
+                }
+            }
+                
+            
+            
+        } catch (SQLException ex) {
+        }
+        return 0;
     }
     
 }
