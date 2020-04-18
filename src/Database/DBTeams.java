@@ -100,7 +100,6 @@ public class DBTeams {
             String query = "update fixtures_teams set score = ? where team_id = ? and fixture_id = ?";
 
             PreparedStatement preparedStmt = db.prepareStatement(query);
-            System.out.println("The score is "+ score);
             preparedStmt.setInt(1, score+1);
             preparedStmt.setInt(2, teamId);
             preparedStmt.setInt(3, fixtureId);

@@ -110,8 +110,6 @@ public class DBFixture {
         
         public static void updateStatus(Connection db ,int fixtureId, String status){
         try {
-            System.out.println("inside updatestatus");
-            System.out.println("fixtureid: " + fixtureId + " status: " + status);
             // the mysql insert statement
             String query = "update fixtures set fixture_status = ? where id = ?";
 
