@@ -28,6 +28,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -37,70 +39,96 @@ import org.json.JSONObject;
  *
  * @author anyone
  */
-public class PastGameApp implements Runnable {
+public class PastGameApp extends TimerTask {
     private String id;
     private int startTime;
     private JSONObject pastFixture;
-    
-    public PastGameApp(String id, String startTime){
-        this.id = id;
-        this.startTime = Integer.parseInt(startTime);
-    }
+    private Timer timer;
+    private boolean started = false;
+    private Connection db;
+    private int event = 0;
+    private Fixture fixture;
 
+    
+    public PastGameApp(String id, String startTime, Timer timer) throws SQLException, PropertyVetoException{
+        this.id = id;
+        this.startTime = Integer.parseInt(startTime) * 60;
+        this.timer = timer;
+        Config database;
+        database = new Config("jdbc:mysql://localhost/in_game_ratings", "root", "");
+        this.db = database.getDatabaseConnection();
+      
+    }
+  
     @Override
     public void run() {
+        int time = startTime;
+        int minute;
+        int second;
         
-        Config database;
         try {
-            
-            database = new Config("jdbc:mysql://localhost/in_game_ratings", "root", "");
-            try (Connection db = database.getDatabaseConnection()) {
 
-                
+            second = time % 60;
+            minute = time/60;
+
+            if(!started){
+                System.out.println("We are starting now!\n");
+                started = true;
                 getPastFixtureData();
-                Fixture fixture = parseFixtureData(db);
+                this.fixture = parseFixtureData(db);
+               
 
-                reverseScores(fixture);
+               reverseScores(fixture);
 
                 DBFixture.addFixture(db, fixture);
                   
                 DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
                 DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
                   
-                for (Player player : fixture.getHomeTeam().getPlayers()) {
+                for (Player player : this.fixture.getHomeTeam().getPlayers()) {
                  DBPlayers.addPlayer(db,  player,fixture.getId());
                 }
-                for (Player player : fixture.getAwayTeam().getPlayers()) {
+                for (Player player : this.fixture.getAwayTeam().getPlayers()) {
                  DBPlayers.addPlayer(db,  player,fixture.getId());
                 }
                 
-                for (Event event : fixture.getEvents()) {
+                for (Event event : this.fixture.getEvents()) {
                     if(event.getMinute() <= startTime){
                         DBEvents.addEvent(db, event);
                     }
                 }
-            } catch (Exception ex) {
-                Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            if(minute == this.fixture.getEvents().get(event).getMinute() && second == 0){
+                    System.out.println("event has happened");
+                    if(event != this.fixture.getEvents().size()-1 ){
+                        event++;
+                    }
+                }
+            
+            if(startTime!= 45 && minute == 45 && second == 0){
+             System.out.println("half time");
+             Thread.sleep(60*15*1000);
+             System.out.println("half time over");
+               
+            }  
+            
+            if(minute == this.pastFixture.getInt("time_minute")){
+                timer.cancel();
+                System.out.println("\nexiting thread");
+            }
+            
+            startTime++;
+            
         } catch (SQLException | PropertyVetoException ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-
-        
+  
     }
     
-    public void outputPlayers(ArrayList<Player> players){
-        
-        for(int i = 0;i < players.size();i++){
-            
-            System.out.println("Player Name: " + players.get(i).getPlayerName() + " Position: " + players.get(i).getFormationPosition());
-                
-            }
-        
-    }
-    
+   
     
     public void getPastFixtureData(){
         
