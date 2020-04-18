@@ -100,14 +100,15 @@ public class PastGameApp extends TimerTask {
             if(minute == this.fixture.getEvents().get(event).getMinute() && second == 0){
                     System.out.println("event has happened");
                     if(event != this.fixture.getEvents().size()-1 ){
+                        DBEvents.addEvent(db, this.fixture.getEvents().get(event));
                         event++;
                     }
                 }
             
             if(startTime!= 45 && minute == 45 && second == 0){
-             System.out.println("half time");
-             Thread.sleep(60*15*1000);
-             System.out.println("half time over");
+                DBFixture.updateStatus(db, this.fixture.getId(), "HT");
+                Thread.sleep(60*1*1000);
+                DBFixture.updateStatus(db, this.fixture.getId(), "LIVE");
                
             }  
             
