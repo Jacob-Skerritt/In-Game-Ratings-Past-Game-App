@@ -17,6 +17,8 @@ import Database.DBPlayers;
 import Database.DBTeams;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -28,6 +30,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -50,12 +53,16 @@ public class PastGameApp extends TimerTask {
     private Fixture fixture;
 
     
-    public PastGameApp(String id, String startTime, Timer timer) throws SQLException, PropertyVetoException{
+    public PastGameApp(String id, String startTime, Timer timer) throws SQLException, PropertyVetoException, FileNotFoundException{
         this.id = id;
         this.startTime = Integer.parseInt(startTime) * 60;
         this.timer = timer;
         Config database;
-        database = new Config("jdbc:mysql://localhost/in_game_ratings", "root", "");
+        String username = getToken("C:\\Users\\anyone\\Desktop\\username.txt");
+        String password = getToken("C:\\Users\\anyone\\Desktop\\password.txt");
+        System.out.println(username + "\n");
+        System.out.println("password: " + password);
+        database = new Config("jdbc:mysql://localhost/in_game_ratings", username, password);
         this.db = database.getDatabaseConnection();
       
     }
@@ -383,6 +390,17 @@ public class PastGameApp extends TimerTask {
 
         return new Player();
 
+    }
+    
+     public static String getToken(String txtFile) throws FileNotFoundException{
+        File file = new File(txtFile); 
+        if(file.length() ==0)
+            return "";
+        Scanner sc = new Scanner(file); 
+
+     
+        return sc.nextLine();
+        
     }
 }
 
