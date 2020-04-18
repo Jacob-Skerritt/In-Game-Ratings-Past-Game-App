@@ -107,12 +107,13 @@ public class PastGameApp extends TimerTask {
             
             if(startTime!= 45 && minute == 45 && second == 0){
                 DBFixture.updateStatus(db, this.fixture.getId(), "HT");
-                Thread.sleep(60*1*1000);
+                Thread.sleep(60*15*1000);
                 DBFixture.updateStatus(db, this.fixture.getId(), "LIVE");
                
             }  
             
             if(minute == this.pastFixture.getInt("time_minute")){
+                DBFixture.updateStatus(db, this.fixture.getId(), "FT");
                 timer.cancel();
                 System.out.println("\nexiting thread");
             }
