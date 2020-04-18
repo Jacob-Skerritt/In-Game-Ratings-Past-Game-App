@@ -94,8 +94,6 @@ public class DBPlayers {
     
     //method to get a players position in a formation based on the paramters fixture id and player id
     public static int getPlayerFormationPosition(Connection db,int playerId, int fixtureId){
-        System.out.println("inside get Position");
-        System.out.println("Player id: " + playerId + " fixture id: " + fixtureId);
         try {
             // the mysql insert statement
             String query = "SELECT formation_position from fixtures_players where player_id = ? AND fixture_id = ?";
@@ -107,17 +105,12 @@ public class DBPlayers {
                 // execute the query, and get a java resultset
                 ResultSet rs = preparedStmt.executeQuery();
                 
-                // iterate through the java resultset
-                
-                
                 while (rs.next()) {               
                     return rs.getInt("formation_position");
                     
                 }
             }
-                
-            
-            
+  
         } catch (SQLException ex) {
         }
         return 0;

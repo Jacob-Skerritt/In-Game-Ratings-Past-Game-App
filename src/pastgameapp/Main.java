@@ -6,13 +6,13 @@
 package pastgameapp;
 
 import java.beans.PropertyVetoException;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.Timer;
 public class Main {
     
-    public static void main(String[] args) throws InterruptedException, SQLException, PropertyVetoException{
-        
+    public static void main(String[] args) throws InterruptedException, SQLException, PropertyVetoException, FileNotFoundException{
         
         Scanner sc = new Scanner(System.in);
         System.out.println("Welcome to the In-Game Ratings Past Fixture App\nType Exit to close!");
@@ -29,11 +29,11 @@ public class Main {
             startTime = sc.nextLine();
             if (!startTime.matches("[0-9]+"))
                 continue;
+            
             Timer timer = new Timer();
             PastGameApp pastGame = new PastGameApp(id,startTime, timer);
             
             timer.schedule(pastGame, 0, 1000);
-            Thread.sleep(1000);
         }
         
     }

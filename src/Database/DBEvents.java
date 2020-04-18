@@ -100,9 +100,6 @@ public class DBEvents {
             if(event.getEventType().equals("substitution")){
 
                 int position = DBPlayers.getPlayerFormationPosition(db, event.getPlayerId(), event.getFixtureId());
-                System.out.println("Position: " + position);
-                System.out.println("Player id: " + event.getRelatedPlayerId());
-                System.out.println("Fixture id: " +event.getFixtureId());
                 DBPlayers.setPlayerFormationPosition(db,event.getPlayerId(), event.getFixtureId(), position);
                 DBPlayers.setPlayerFormationPosition(db,event.getRelatedPlayerId(), event.getFixtureId(), 0);
                 
