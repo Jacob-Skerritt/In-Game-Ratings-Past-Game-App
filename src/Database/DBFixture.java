@@ -59,56 +59,56 @@ public class DBFixture {
        
     }
         
-        public static void addFixture(Connection db, Fixture fixture){
-            
-            
-            try {
-                        // the mysql insert statement
-                        String query = " insert into fixtures(id, league_id, season_id, stage_id, round_id, venue_id, weather_code, weather_type, weather_report_image, temperature, fixture_status, starting_time, starting_date, timezone, time_minute, time_second, added_time, extra_time, injury_time)"
-                                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                        // create the mysql insert preparedstatement
-                        PreparedStatement preparedStmt = db.prepareStatement(query);
-                        preparedStmt.setInt(1, fixture.getId());
-                        preparedStmt.setInt(2, fixture.getLeagueId());
-                        preparedStmt.setInt(3, fixture.getSeasonId());
-                        preparedStmt.setInt(4, fixture.getStageId());
-                        preparedStmt.setInt(5, fixture.getRoundId());
-                        
-                        preparedStmt.setInt(6, fixture.getVenueId());
-                        
-                        
+    public static void addFixture(Connection db, Fixture fixture){
 
-                        preparedStmt.setString(7, fixture.getWeatherCode());
-                        preparedStmt.setString(8, fixture.getWeatherType());
 
-                        preparedStmt.setString(9, fixture.getWeatherImage());
-                        preparedStmt.setInt(10, fixture.getTemp());
-                        
+        try {
+            // the mysql insert statement
+            String query = " insert into fixtures(id, league_id, season_id, stage_id, round_id, venue_id, weather_code, weather_type, weather_report_image, temperature, fixture_status, starting_time, starting_date, timezone, time_minute, time_second, added_time, extra_time, injury_time)"
+                    + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = db.prepareStatement(query);
+            preparedStmt.setInt(1, fixture.getId());
+            preparedStmt.setInt(2, fixture.getLeagueId());
+            preparedStmt.setInt(3, fixture.getSeasonId());
+            preparedStmt.setInt(4, fixture.getStageId());
+            preparedStmt.setInt(5, fixture.getRoundId());
 
-                        preparedStmt.setString(11, fixture.getStatus());
-                        preparedStmt.setTime(12, Time.valueOf(fixture.getStartTime()));
-                        preparedStmt.setDate(13, Date.valueOf(fixture.getStartDate()));
-                        preparedStmt.setString(14, fixture.getTimezone());
+            preparedStmt.setInt(6, fixture.getVenueId());
 
-                        preparedStmt.setInt(15, fixture.getTimeMinute());
-                        preparedStmt.setInt(16, fixture.getTimeSecond());
-                        preparedStmt.setInt(17, fixture.getAddedTime());
-                        preparedStmt.setInt(18, fixture.getExtraTime());
-                        preparedStmt.setInt(19, fixture.getInjuryTime());
-                        // execute the preparedstatement
-                        preparedStmt.execute();
-                         
 
-                    } catch (SQLException ex) {
 
-                    }finally{
-            
-                    }
-            
-            
+            preparedStmt.setString(7, fixture.getWeatherCode());
+            preparedStmt.setString(8, fixture.getWeatherType());
+
+            preparedStmt.setString(9, fixture.getWeatherImage());
+            preparedStmt.setInt(10, fixture.getTemp());
+
+
+            preparedStmt.setString(11, fixture.getStatus());
+            preparedStmt.setTime(12, Time.valueOf(fixture.getStartTime()));
+            preparedStmt.setDate(13, Date.valueOf(fixture.getStartDate()));
+            preparedStmt.setString(14, fixture.getTimezone());
+
+            preparedStmt.setInt(15, fixture.getTimeMinute());
+            preparedStmt.setInt(16, fixture.getTimeSecond());
+            preparedStmt.setInt(17, fixture.getAddedTime());
+            preparedStmt.setInt(18, fixture.getExtraTime());
+            preparedStmt.setInt(19, fixture.getInjuryTime());
+            // execute the preparedstatement
+            preparedStmt.execute();
+
+
+        } catch (SQLException ex) {
+
+        }finally{
+
         }
+
+
+    }
         
-        public static void updateStatus(Connection db ,int fixtureId, String status){
+    public static void updateStatus(Connection db ,int fixtureId, String status){
         try {
             // the mysql insert statement
             String query = "update fixtures set fixture_status = ? where id = ?";
@@ -118,7 +118,23 @@ public class DBFixture {
             preparedStmt.setInt(2, fixtureId);
 
              preparedStmt.execute();
-            
+
+        } catch (SQLException ex) {
+        }
+    }
+    
+    public static void updateTime(Connection db ,int fixtureId, int minute, int second){
+        try {
+            // the mysql insert statement
+            String query = "update fixtures set time_minute = ?,time_second = ? where id = ?";
+
+            PreparedStatement preparedStmt = db.prepareStatement(query);
+            preparedStmt.setInt(1, minute);
+            preparedStmt.setInt(2, second);
+            preparedStmt.setInt(3, fixtureId);
+
+             preparedStmt.execute();
+
         } catch (SQLException ex) {
         }
     }

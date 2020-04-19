@@ -60,7 +60,8 @@ public class PastGameApp extends TimerTask {
         Config database;
         String username = getToken("C:\\Users\\anyone\\Desktop\\username.txt");
         String password = getToken("C:\\Users\\anyone\\Desktop\\password.txt");
-        database = new Config("jdbc:mysql://localhost/in_game_ratings", username, password);
+        String address = getToken("C:\\Users\\anyone\\Desktop\\address.txt");
+        database = new Config(address, username, password);
         this.db = database.getDatabaseConnection();
       
     }
@@ -80,12 +81,13 @@ public class PastGameApp extends TimerTask {
                 started = true;
                 getPastFixtureData();
                 this.fixture = parseFixtureData(db);
+                reverseSubstitutions(this.fixture);
                
 
                 DBFixture.addFixture(db, fixture);
                   
-                DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
-                DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
+                //DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
+                //DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
                   
                 for (Player player : this.fixture.getHomeTeam().getPlayers()) {
                  DBPlayers.addPlayer(db,  player,fixture.getId());
@@ -94,9 +96,9 @@ public class PastGameApp extends TimerTask {
                  DBPlayers.addPlayer(db,  player,fixture.getId());
                 }
                 
-                for (Event event : this.fixture.getEvents()) {
-                    if(event.getMinute() <= startTime){
-                        DBEvents.addEvent(db, event);
+                for (Event evnt : this.fixture.getEvents()) {
+                    if(evnt.getMinute() <= startTime/60){
+                        DBEvents.addEvent(db, evnt);
                     }
                 }
             }
@@ -122,6 +124,7 @@ public class PastGameApp extends TimerTask {
             }
             
             startTime++;
+            DBFixture.updateTime(db, this.fixture.getId(), minute, second);
             
         } catch (SQLException | PropertyVetoException ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -188,7 +191,7 @@ public class PastGameApp extends TimerTask {
         tempFixture.setStartTime(LocalTime.parse(pastFixture.getString("starting_time")));
         tempFixture.setStartDate(LocalDate.parse(pastFixture.getString("starting_date")));
         tempFixture.setTimezone(pastFixture.getString("timezone"));
-        tempFixture.setTimeMinute(this.startTime);
+        tempFixture.setTimeMinute(this.startTime/60);
         tempFixture.setTimeSecond(0);
         tempFixture.setAddedTime(pastFixture.getInt("added_time"));
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
@@ -348,7 +351,7 @@ public class PastGameApp extends TimerTask {
 
         for(int i = fixture.getEvents().size();i > 0;i--){
             tempEvent = fixture.getEvents().get(i-1);
-            if(tempEvent.getEventId() == 2 && tempEvent.getMinute() > startTime){
+            if(tempEvent.getEventId() == 2 && tempEvent.getMinute() > startTime/60){
                tempPlayer1 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getPlayerId());
                tempPlayer2 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getRelatedPlayerId());
 
