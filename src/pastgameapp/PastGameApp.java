@@ -45,6 +45,7 @@ import org.json.JSONObject;
 public class PastGameApp extends TimerTask {
     private String id;
     private int startTime;
+    private int gameTime;
     private JSONObject pastFixture;
     private Timer timer;
     private boolean started = false;
@@ -55,8 +56,9 @@ public class PastGameApp extends TimerTask {
     
     public PastGameApp(String id, String startTime, Timer timer) throws SQLException, PropertyVetoException, FileNotFoundException{
         this.id = id;
-        this.startTime = Integer.parseInt(startTime) * 60;
+        this.startTime = Integer.parseInt(startTime);
         this.timer = timer;
+        this.gameTime = this.startTime*60;
         Config database;
         String username = getToken("C:\\Users\\anyone\\Desktop\\username.txt");
         String password = getToken("C:\\Users\\anyone\\Desktop\\password.txt");
@@ -68,7 +70,7 @@ public class PastGameApp extends TimerTask {
   
     @Override
     public void run() {
-        int time = startTime;
+        int time = gameTime;
         int minute;
         int second;
         
@@ -86,8 +88,8 @@ public class PastGameApp extends TimerTask {
 
                 DBFixture.addFixture(db, fixture);
                   
-                //DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
-                //DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
+                DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
+                DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
                   
                 for (Player player : this.fixture.getHomeTeam().getPlayers()) {
                  DBPlayers.addPlayer(db,  player,fixture.getId());
@@ -95,16 +97,18 @@ public class PastGameApp extends TimerTask {
                 for (Player player : this.fixture.getAwayTeam().getPlayers()) {
                  DBPlayers.addPlayer(db,  player,fixture.getId());
                 }
-                
+
                 for (Event evnt : this.fixture.getEvents()) {
-                    if(evnt.getMinute() <= startTime/60){
+                    if(evnt.getMinute() <= startTime){
                         DBEvents.addEvent(db, evnt);
+                        event++;
                     }
                 }
             }
             
             if(minute == this.fixture.getEvents().get(event).getMinute() && second == 0){
                     if(event != this.fixture.getEvents().size()-1 ){
+                        
                         DBEvents.addEvent(db, this.fixture.getEvents().get(event));
                         event++;
                     }
@@ -117,13 +121,13 @@ public class PastGameApp extends TimerTask {
                
             }  
             
-            if(minute == this.pastFixture.getInt("time_minute")){
+            if(minute >= this.pastFixture.getInt("time_minute")){
                 DBFixture.updateStatus(db, this.fixture.getId(), "FT");
                 timer.cancel();
 
             }
             
-            startTime++;
+            gameTime++;
             DBFixture.updateTime(db, this.fixture.getId(), minute, second);
             
         } catch (SQLException | PropertyVetoException ex) {
@@ -191,7 +195,7 @@ public class PastGameApp extends TimerTask {
         tempFixture.setStartTime(LocalTime.parse(pastFixture.getString("starting_time")));
         tempFixture.setStartDate(LocalDate.parse(pastFixture.getString("starting_date")));
         tempFixture.setTimezone(pastFixture.getString("timezone"));
-        tempFixture.setTimeMinute(this.startTime/60);
+        tempFixture.setTimeMinute(this.startTime);
         tempFixture.setTimeSecond(0);
         tempFixture.setAddedTime(pastFixture.getInt("added_time"));
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
@@ -351,10 +355,10 @@ public class PastGameApp extends TimerTask {
 
         for(int i = fixture.getEvents().size();i > 0;i--){
             tempEvent = fixture.getEvents().get(i-1);
-            if(tempEvent.getEventId() == 2 && tempEvent.getMinute() > startTime/60){
+            if(tempEvent.getEventId() == 2){
                tempPlayer1 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getPlayerId());
                tempPlayer2 = getPlayer(getTeam(fixture, tempEvent.getTeamId()), tempEvent.getRelatedPlayerId());
-
+               
                position = tempPlayer1.getFormationPosition();
                tempPlayer1.setFormationPosition(-1);
                tempPlayer2.setFormationPosition(position);
