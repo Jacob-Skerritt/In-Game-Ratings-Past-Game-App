@@ -99,7 +99,7 @@ public class DBEvents {
             //If statement used to update player formation position in the case of a substitution
             if(event.getEventType().equals("substitution")){
 
-                int position = DBPlayers.getPlayerFormationPosition(db, event.getPlayerId(), event.getFixtureId());
+                int position = DBPlayers.getPlayerFormationPosition(db, event.getRelatedPlayerId(), event.getFixtureId());
                 DBPlayers.setPlayerFormationPosition(db,event.getPlayerId(), event.getFixtureId(), position);
                 DBPlayers.setPlayerFormationPosition(db,event.getRelatedPlayerId(), event.getFixtureId(), 0);
                 
