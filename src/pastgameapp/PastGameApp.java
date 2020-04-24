@@ -59,12 +59,12 @@ public class PastGameApp extends TimerTask {
         this.startTime = Integer.parseInt(startTime);
         this.timer = timer;
         this.gameTime = this.startTime*60;
-        Config database;
-        String username = getToken("C:\\Users\\anyone\\Desktop\\username.txt");
-        String password = getToken("C:\\Users\\anyone\\Desktop\\password.txt");
-        String address = getToken("C:\\Users\\anyone\\Desktop\\address.txt");
-        database = new Config(address, username, password);
-        this.db = database.getDatabaseConnection();
+        //Config database;
+        //String username = getToken("C:\\Users\\anyone\\Desktop\\username.txt");
+        //String password = getToken("C:\\Users\\anyone\\Desktop\\password.txt");
+        //String address = getToken("C:\\Users\\anyone\\Desktop\\address.txt");
+        //database = new Config(address, username, password);
+        //this.db = database.getDatabaseConnection();
       
     }
   
