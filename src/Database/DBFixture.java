@@ -158,19 +158,39 @@ public class DBFixture {
         }
     }
     
-    public static void updateTime(Connection db ,int fixtureId, int minute, int second){
+    public static void updateTime(int fixtureId, int minute, int second){
+      
         try {
-            // the mysql insert statement
-            String query = "update fixtures set time_minute = ?,time_second = ? where id = ?";
+            
+            URL url = new URL ("http://mysql03.comp.dkit.ie/D00196117/in_game_ratings_api/fixture/updateTime.php");
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            String jsonInputString = "{\"id\": \" "+ fixtureId +  "\", \"time_minute\": \" " + minute + "\", \"time_second\": \" " + second + "\"}";
+            
+            try(OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);           
+            }
+            
+            try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                  StringBuilder response = new StringBuilder();
+                  String responseLine = null;
+                  while ((responseLine = br.readLine()) != null) {
+                      response.append(responseLine.trim());
+                  }
 
-            PreparedStatement preparedStmt = db.prepareStatement(query);
-            preparedStmt.setInt(1, minute);
-            preparedStmt.setInt(2, second);
-            preparedStmt.setInt(3, fixtureId);
-
-             preparedStmt.execute();
-
-        } catch (SQLException ex) {
+                  
+              }
+            
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
