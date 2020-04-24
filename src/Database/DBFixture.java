@@ -121,18 +121,40 @@ public class DBFixture {
 
     }
         
-    public static void updateStatus(Connection db ,int fixtureId, String status){
+    public static void updateStatus(int fixtureId, String status){
+
+        
         try {
-            // the mysql insert statement
-            String query = "update fixtures set fixture_status = ? where id = ?";
+            
+            URL url = new URL ("http://mysql03.comp.dkit.ie/D00196117/in_game_ratings_api/fixture/updateStatus.php");
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            String jsonInputString = "{\"id\": \" "+ fixtureId +  "\", \"fixture_status\": \" " + status + "\"}";
+            
+            try(OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);           
+            }
+            
+            try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                  StringBuilder response = new StringBuilder();
+                  String responseLine = null;
+                  while ((responseLine = br.readLine()) != null) {
+                      response.append(responseLine.trim());
+                  }
 
-            PreparedStatement preparedStmt = db.prepareStatement(query);
-            preparedStmt.setString(1, status);
-            preparedStmt.setInt(2, fixtureId);
-
-             preparedStmt.execute();
-
-        } catch (SQLException ex) {
+                  
+              }
+            
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
