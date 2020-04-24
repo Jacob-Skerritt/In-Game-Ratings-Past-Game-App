@@ -73,7 +73,7 @@ public class PastGameApp extends TimerTask {
         int time = gameTime;
         int minute;
         int second;
-      
+        
         try {
 
             second = time % 60;
@@ -128,7 +128,7 @@ public class PastGameApp extends TimerTask {
             }
             
             gameTime++;
-            DBFixture.updateTime(db, this.fixture.getId(), minute, second);
+            DBFixture.updateTime(this.fixture.getId(), minute, second);
             
         } catch (SQLException | PropertyVetoException ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
