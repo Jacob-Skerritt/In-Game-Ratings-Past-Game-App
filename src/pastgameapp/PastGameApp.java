@@ -73,7 +73,7 @@ public class PastGameApp extends TimerTask {
         int time = gameTime;
         int minute;
         int second;
-        
+      
         try {
 
             second = time % 60;
@@ -84,7 +84,7 @@ public class PastGameApp extends TimerTask {
                 getPastFixtureData();
                 this.fixture = parseFixtureData(db);
                 reverseSubstitutions(this.fixture);
-               
+
 
                 DBFixture.addFixture(db, fixture);
                   
@@ -118,8 +118,8 @@ public class PastGameApp extends TimerTask {
                 DBFixture.updateStatus(db, this.fixture.getId(), "HT");
                 Thread.sleep(60*15*1000);
                 DBFixture.updateStatus(db, this.fixture.getId(), "LIVE");
-               
-            }  
+
+            }
             
             if(minute >= this.pastFixture.getInt("time_minute")){
                 DBFixture.updateStatus(db, this.fixture.getId(), "FT");
@@ -135,7 +135,7 @@ public class PastGameApp extends TimerTask {
         } catch (Exception ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-  
+
     }
     
    
@@ -181,7 +181,7 @@ public class PastGameApp extends TimerTask {
         
         Fixture tempFixture = new Fixture();
         
-        tempFixture.setId(DBFixture.determineFixtureId(db));
+        tempFixture.setId(DBFixture.determineFixtureId());
         tempFixture.setLeagueId(pastFixture.getInt("league_id"));
         tempFixture.setSeasonId(pastFixture.getInt("season_id"));
         tempFixture.setStageId(pastFixture.getInt("stage_id"));
