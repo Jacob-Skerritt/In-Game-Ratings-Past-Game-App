@@ -85,15 +85,15 @@ public class PastGameApp extends TimerTask {
                 getPastFixtureData();
         try {
             this.fixture = parseFixtureData();
+            System.out.println(DBEvents.determineEventId());
         } catch (Exception ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
                // reverseSubstitutions(this.fixture);
 
-                if(this.testTest){
-                    DBFixture.addFixture(fixture);
-                    this.testTest = false;
-                }
+//                DBFixture.addFixture(fixture);
+                  
+
 //                  
 //                DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
 //                DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
@@ -300,7 +300,7 @@ public class PastGameApp extends TimerTask {
         ArrayList<Event> events = new ArrayList<>();
         Event tempEvent;
         
-        int eventId = DBEvents.determineEventId(db);
+        int eventId = DBEvents.determineEventId();
         for(int i = 0; i < eventData.length();i++){
             JSONObject temp = (JSONObject) eventData.get(i);
             tempEvent  = new Event();
