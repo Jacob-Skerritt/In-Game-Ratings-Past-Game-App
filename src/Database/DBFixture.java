@@ -58,6 +58,7 @@ public class DBFixture {
                   }
 
                   newId = Integer.parseInt(response.toString());
+                  newId += 1;
               }
             
             
