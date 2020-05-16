@@ -52,6 +52,7 @@ public class PastGameApp extends TimerTask {
     private Connection db;
     private int event = 0;
     private Fixture fixture;
+    private boolean testTest = true;
 
     
     public PastGameApp(String id, String startTime, Timer timer) throws SQLException, PropertyVetoException, FileNotFoundException{
@@ -73,68 +74,74 @@ public class PastGameApp extends TimerTask {
         int time = gameTime;
         int minute;
         int second;
-        
-        try {
+//        
+//        try {
 
             second = time % 60;
             minute = time/60;
 
-            if(!started){
-                started = true;
+            //if(!started){
+               // started = true;
                 getPastFixtureData();
-                this.fixture = parseFixtureData(db);
-                reverseSubstitutions(this.fixture);
-
-
-                DBFixture.addFixture(db, fixture);
-                  
-                DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
-                DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
-                  
-                for (Player player : this.fixture.getHomeTeam().getPlayers()) {
-                 DBPlayers.addPlayer(db,  player,fixture.getId());
-                }
-                for (Player player : this.fixture.getAwayTeam().getPlayers()) {
-                 DBPlayers.addPlayer(db,  player,fixture.getId());
-                }
-
-                for (Event evnt : this.fixture.getEvents()) {
-                    if(evnt.getMinute() <= startTime){
-                        DBEvents.addEvent(db, evnt);
-                        event++;
-                    }
-                }
-            }
-            
-            if(minute == this.fixture.getEvents().get(event).getMinute() && second == 0){
-                    if(event != this.fixture.getEvents().size()-1 ){
-                        
-                        DBEvents.addEvent(db, this.fixture.getEvents().get(event));
-                        event++;
-                    }
-                }
-            
-            if(startTime!= 45 && minute == 45 && second == 0){
-                DBFixture.updateStatus(this.fixture.getId(), "HT");
-                Thread.sleep(60*15*1000);
-                DBFixture.updateStatus(this.fixture.getId(), "LIVE");
-
-            }
-            
-            if(minute >= this.pastFixture.getInt("time_minute")){
-                DBFixture.updateStatus(this.fixture.getId(), "FT");
-                timer.cancel();
-
-            }
-            
-            gameTime++;
-            DBFixture.updateTime(this.fixture.getId(), minute, second);
-            
-        } catch (SQLException | PropertyVetoException ex) {
-            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            this.fixture = parseFixtureData();
         } catch (Exception ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
+               // reverseSubstitutions(this.fixture);
+
+                if(this.testTest){
+                    DBFixture.addFixture(fixture);
+                    this.testTest = false;
+                }
+//                  
+//                DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
+//                DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
+//                  
+//                for (Player player : this.fixture.getHomeTeam().getPlayers()) {
+//                 DBPlayers.addPlayer(db,  player,fixture.getId());
+//                }
+//                for (Player player : this.fixture.getAwayTeam().getPlayers()) {
+//                 DBPlayers.addPlayer(db,  player,fixture.getId());
+//                }
+//
+//                for (Event evnt : this.fixture.getEvents()) {
+//                    if(evnt.getMinute() <= startTime){
+//                        DBEvents.addEvent(db, evnt);
+//                        event++;
+//                    }
+//                }
+//            }
+//            
+//            if(minute == this.fixture.getEvents().get(event).getMinute() && second == 0){
+//                    if(event != this.fixture.getEvents().size()-1 ){
+//                        
+//                        DBEvents.addEvent(db, this.fixture.getEvents().get(event));
+//                        event++;
+//                    }
+//                }
+//            
+//            if(startTime!= 45 && minute == 45 && second == 0){
+//                DBFixture.updateStatus(this.fixture.getId(), "HT");
+//                Thread.sleep(60*15*1000);
+//                DBFixture.updateStatus(this.fixture.getId(), "LIVE");
+//
+//            }
+//            
+//            if(minute >= this.pastFixture.getInt("time_minute")){
+//                DBFixture.updateStatus(this.fixture.getId(), "FT");
+//                timer.cancel();
+//
+//            }
+//            
+//            gameTime++;
+//            DBFixture.updateTime(this.fixture.getId(), minute, second);
+//            
+//        } catch (SQLException | PropertyVetoException ex) {
+//            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (Exception ex) {
+//            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
     }
     
@@ -177,7 +184,7 @@ public class PastGameApp extends TimerTask {
         
     }
     
-    public Fixture parseFixtureData(Connection db) throws Exception{
+    public Fixture parseFixtureData() throws Exception{
         
         Fixture tempFixture = new Fixture();
         
@@ -200,10 +207,10 @@ public class PastGameApp extends TimerTask {
         tempFixture.setAddedTime(pastFixture.getInt("added_time"));
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
         tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
-        tempFixture.setEvents(parseEventData(db,pastFixture.getJSONArray("events"), tempFixture.getId()));
-        tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners"), tempFixture.getId()));
-        tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
-        tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam"))); 
+       // tempFixture.setEvents(parseEventData(db,pastFixture.getJSONArray("events"), tempFixture.getId()));
+        //tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners"), tempFixture.getId()));
+        //tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
+        //tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam"))); 
         
        
         
