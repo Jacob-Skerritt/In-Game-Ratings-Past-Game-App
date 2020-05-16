@@ -146,23 +146,43 @@ public class DBPlayers {
     }
     
     //Method to update a plyaers formation for a particular fixture
-    public static void setPlayerFormationPosition(Connection db,int playerId, int fixtureId, int position){
+    public static void setPlayerFormationPosition(int playerId, int fixtureId, int position){
+
+      
+        
         try {
-            // the mysql insert statement
-            String query = "update fixtures_players set formation_position = ? where player_id = ? and fixture_id = ?";
-
-            PreparedStatement preparedStmt = db.prepareStatement(query);
-            if(position >0)
-                preparedStmt.setInt(1, position);
-            else
-                preparedStmt.setNull(1, java.sql.Types.VARCHAR);
-            preparedStmt.setInt(2, playerId);
-            preparedStmt.setInt(3, fixtureId);
-
-             preparedStmt.execute();
             
-        } catch (SQLException ex) {
+            URL url = new URL ("http://mysql03.comp.dkit.ie/D00196117/in_game_ratings_api/fixture_player/updatePosition.php");
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            String jsonInputString = "{\"fixture_id\": \" "+ fixtureId +  "\", \"player_id\": \" " + playerId + "\", \"formation_position\": \" " + position +  "\"}";
+            
+            try(OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);           
+            }
+            
+            try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                  StringBuilder response = new StringBuilder();
+                  String responseLine = null;
+                  while ((responseLine = br.readLine()) != null) {
+                      response.append(responseLine.trim());
+                  }
+
+                  
+              }
+            
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
 }

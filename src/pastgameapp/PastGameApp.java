@@ -91,6 +91,7 @@ public class PastGameApp extends TimerTask {
             //System.out.println(DBFixture.determineFixtureId());   
             //DBTeams.updateScore(9, 11867481,10);
             //System.out.println(DBPlayers.getPlayerFormationPosition(297,11867481));
+            DBPlayers.setPlayerFormationPosition(911,11867481,2);
         } catch (Exception ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
