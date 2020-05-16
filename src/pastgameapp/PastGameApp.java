@@ -87,6 +87,9 @@ public class PastGameApp extends TimerTask {
             this.fixture = parseFixtureData();
             System.out.println(DBEvents.determineEventId());
             System.out.println(DBFixture.determineFixtureId());
+            
+            System.out.println(DBFixture.determineFixtureId());   
+                
         } catch (Exception ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
