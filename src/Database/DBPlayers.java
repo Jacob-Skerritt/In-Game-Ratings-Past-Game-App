@@ -6,10 +6,20 @@
 package Database;
 
 import Classes.Player;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import pastgameapp.PastGameApp;
 
 /**
  *
@@ -93,27 +103,46 @@ public class DBPlayers {
     }
     
     //method to get a players position in a formation based on the paramters fixture id and player id
-    public static int getPlayerFormationPosition(Connection db,int playerId, int fixtureId){
+    public static int getPlayerFormationPosition(int playerId, int fixtureId){
+        
+        int formationPosition = -1;
+        
         try {
-            // the mysql insert statement
-            String query = "SELECT formation_position from fixtures_players where player_id = ? AND fixture_id = ?";
-
-            try (PreparedStatement preparedStmt = db.prepareStatement(query)) {
-                preparedStmt.setInt(1, playerId);
-                preparedStmt.setInt(2, fixtureId);
-                
-                // execute the query, and get a java resultset
-                ResultSet rs = preparedStmt.executeQuery();
-                
-                while (rs.next()) {               
-                    return rs.getInt("formation_position");
-                    
-                }
+            
+            URL url = new URL ("http://mysql03.comp.dkit.ie/D00196117/in_game_ratings_api/fixture_player/get_position.php");
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            String jsonInputString = "{\"fixture_id\": \" "+ fixtureId +  "\", \"player_id\": \" " + playerId + "\"}";
+            
+            try(OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);           
             }
-  
-        } catch (SQLException ex) {
+            
+            try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                  StringBuilder response = new StringBuilder();
+                  String responseLine = null;
+                  while ((responseLine = br.readLine()) != null) {
+                      response.append(responseLine.trim());
+                  }
+
+                  if(response.toString().length() > 0)
+                    formationPosition = Integer.parseInt(response.toString());
+                  
+              }
+            
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
+
+        return formationPosition;
     }
     
     //Method to update a plyaers formation for a particular fixture
