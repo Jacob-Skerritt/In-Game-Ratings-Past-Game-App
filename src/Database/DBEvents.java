@@ -7,20 +7,10 @@ package Database;
 
 import Classes.Event;
 import Classes.Team;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import pastgameapp.PastGameApp;
 
 /**
  *
@@ -28,41 +18,39 @@ import pastgameapp.PastGameApp;
  */
 public class DBEvents {
     
-     public static int determineEventId() throws Exception{
+     public static int determineEventId(Connection db) throws Exception{
 
         int newId = -1;
-        
         try {
-            
-            URL url = new URL ("http://mysql03.comp.dkit.ie/D00196117/in_game_ratings_api/fixture_event/count_fixture_events.php");
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json; utf-8");
-            con.setRequestProperty("Accept", "application/json");
-            con.setDoOutput(true);
-            String jsonInputString = "";
-            
-            try(OutputStream os = con.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);           
-            }
-            
-            try(BufferedReader br = new BufferedReader(
-                new InputStreamReader(con.getInputStream(), "utf-8"))) {
-                  StringBuilder response = new StringBuilder();
-                  String responseLine = null;
-                  while ((responseLine = br.readLine()) != null) {
-                      response.append(responseLine.trim());
-                  }
 
-                  newId = Integer.parseInt(response.toString());
-              }
-            
-            
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+            // the mysql insert statement
+            String query = " SELECT COUNT(*) from fixtures_events where id < 50000";
+
+            PreparedStatement preparedStmt = db.prepareStatement(query);
+
+            // execute the query, and get a java resultset
+            ResultSet rs = preparedStmt.executeQuery();
+
+            // iterate through the java resultset
+              // iterate through the java resultset
+            if (rs.isBeforeFirst()) {
+
+                while (rs.next()) {
+                    int count = rs.getInt("COUNT(*)");
+
+                   newId = count;
+
+                }
+                preparedStmt.close();
+
+            }
+
+            if(newId == -1)
+                throw new Exception("Invalid, unable to generate event id");
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
         }
 
         return newId;
