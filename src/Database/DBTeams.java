@@ -6,10 +6,20 @@
 package Database;
 
 import Classes.Team;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import pastgameapp.PastGameApp;
 
 /**
  *
@@ -94,19 +104,39 @@ public class DBTeams {
         }
     }
     
-    public static void updateScore(Connection db ,int teamId, int fixtureId, int score){
+    public static void updateScore(int teamId, int fixtureId, int score){
+
         try {
-            // the mysql insert statement
-            String query = "update fixtures_teams set score = ? where team_id = ? and fixture_id = ?";
-
-            PreparedStatement preparedStmt = db.prepareStatement(query);
-            preparedStmt.setInt(1, score+1);
-            preparedStmt.setInt(2, teamId);
-            preparedStmt.setInt(3, fixtureId);
-
-             preparedStmt.execute();
             
-        } catch (SQLException ex) {
+            URL url = new URL ("http://mysql03.comp.dkit.ie/D00196117/in_game_ratings_api/fixture_team/add_goal.php");
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            String jsonInputString = "{\"id\": \" "+ fixtureId +  "\", \"score\": \" " + score + "\", \"team_id\": \" " + teamId + "\"}";
+            
+            try(OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);           
+            }
+            
+            try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                  StringBuilder response = new StringBuilder();
+                  String responseLine = null;
+                  while ((responseLine = br.readLine()) != null) {
+                      response.append(responseLine.trim());
+                  }
+
+                  
+              }
+            
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

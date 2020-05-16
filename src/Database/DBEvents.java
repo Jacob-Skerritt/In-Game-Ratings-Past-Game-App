@@ -120,7 +120,7 @@ public class DBEvents {
             
             if(event.getEventType().equals("goal")){
                 int score = DBTeams.getScore(db, event.getTeamId(), event.getFixtureId());
-                DBTeams.updateScore(db, event.getTeamId(), event.getFixtureId(), score); 
+                //DBTeams.updateScore(db, event.getTeamId(), event.getFixtureId(), score); 
                 
             }
         
