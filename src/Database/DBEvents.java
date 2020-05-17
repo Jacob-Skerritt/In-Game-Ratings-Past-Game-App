@@ -111,16 +111,16 @@ public class DBEvents {
             //If statement used to update player formation position in the case of a substitution
             if(event.getEventType().equals("substitution")){
 
-                int position = DBPlayers.getPlayerFormationPosition(db, event.getRelatedPlayerId(), event.getFixtureId());
-                DBPlayers.setPlayerFormationPosition(db,event.getPlayerId(), event.getFixtureId(), position);
-                DBPlayers.setPlayerFormationPosition(db,event.getRelatedPlayerId(), event.getFixtureId(), 0);
+                int position = DBPlayers.getPlayerFormationPosition(event.getRelatedPlayerId(), event.getFixtureId());
+                DBPlayers.setPlayerFormationPosition(event.getPlayerId(), event.getFixtureId(), position);
+                DBPlayers.setPlayerFormationPosition(event.getRelatedPlayerId(), event.getFixtureId(), 0);
                 
                 
             }
             
             if(event.getEventType().equals("goal")){
                 int score = DBTeams.getScore(db, event.getTeamId(), event.getFixtureId());
-                DBTeams.updateScore(db, event.getTeamId(), event.getFixtureId(), score); 
+                DBTeams.updateScore( event.getTeamId(), event.getFixtureId(), score); 
                 
             }
         
