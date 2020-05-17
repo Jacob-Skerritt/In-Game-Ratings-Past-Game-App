@@ -13,10 +13,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import pastgameapp.PastGameApp;
@@ -27,78 +23,76 @@ import pastgameapp.PastGameApp;
  */
 public class DBPlayers {
     
-    public static void addPlayer(Connection db, Player player, int fixtureId){
-    try {
-            // the mysql insert statement
-            String query = "insert into"
-                        + " fixtures_players(fixture_id, player_id, team_id, position, type, formation_position, captain, minutes_played, pass_accuracy, total_shots, shots_on_goal,"
-                        + " saves, goal_scores, goal_assists, total_crosses, cross_accuracy, yellowcards, redcards, yellowredcards, offsides, pen_saved, pen_missed, pen_scored,"
-                        + " tackles, blocks, intercepts, clearances)"
-                        + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            // create the mysql insert preparedstatement
-            PreparedStatement preparedStmt = db.prepareStatement(query);
-            
-            preparedStmt.setInt(1, fixtureId);
-
-            preparedStmt.setInt(2, player.getId());
-            
-            preparedStmt.setInt(3, player.getTeamId());
-
-            preparedStmt.setString(4, String.valueOf(player.getPosition()));
-
-            preparedStmt.setString(5, player.getType());
-
+    public static void addPlayer(Player player, int fixtureId){
+    
+        try {
+        
+            int position = 20;
+        
             if(player.getFormationPosition() != -1)
-                preparedStmt.setInt(6, player.getFormationPosition());
-            else
-                preparedStmt.setNull(6, java.sql.Types.VARCHAR);
+                position = player.getFormationPosition();
 
-            preparedStmt.setBoolean(7, player.isCaptain());
-
-            preparedStmt.setInt(8, player.getMinutesPlayed());
-
-            preparedStmt.setInt(9, player.getPassAccuracy());
-
-            preparedStmt.setInt(10, player.getTotalShots());
-
-            preparedStmt.setInt(11, player.getShotsOnGoal());
-
-            preparedStmt.setInt(12, player.getSaves());
-
-            preparedStmt.setInt(13, player.getGoalScores());
-
-            preparedStmt.setInt(14, player.getGoalAssists());
             
-            preparedStmt.setInt(15, player.getTotalCrosses());
+            URL url = new URL ("http://mysql03.comp.dkit.ie/D00196117/in_game_ratings_api/fixture_player/create.php");
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            String jsonInputString = "{"
+                    + "\"fixture_id\":\""+ fixtureId +  "\","
+                    + "\"player_id\":\"" + player.getId() + "\","
+                    + "\"team_id\":\"" + player.getTeamId()+ "\","
+                    + "\"position\":\"" + String.valueOf(player.getPosition())+ "\","
+                    + "\"type\":\"" +  player.getType() + "\","
+                    + "\"formation_position\":\"" + position + "\","
+                    + "\"captain\":\"" + player.isCaptain() + "\","
+                    + "\"minutes_played\":\"" + player.getMinutesPlayed() + "\","
+                    + "\"pass_accuracy\":\"" + player.getPassAccuracy()+ "\","
+                    + "\"total_shots\":\"" + player.getTotalShots()+ "\","
+                    + "\"shots_on_goal\":\"" + player.getShotsOnGoal()+ "\","
+                    + "\"saves\":\"" + player.getSaves() + "\","
+                    + "\"goal_scores\":\"" + player.getGoalScores() + "\","
+                    + "\"goal_assists\":\"" +  player.getGoalAssists() + "\","
+                    + "\"total_crosses\":\"" + player.getTotalCrosses() + "\","
+                    + "\"cross_accuracy\":\"" + player.getCrossAccuracy()+ "\","
+                    + "\"yellowcards\":\"" +  player.getYellowcards() + "\","
+                    + "\"redcards\":\"" + player.getRedcards() + "\","
+                    + "\"yellowredcards\":\"" + player.getYellowRedcards() + "\","
+                    + "\"offsides\":\"" + player.getOffsides() + "\","
+                    + "\"pen_saved\":\"" + player.getPenSaved() + "\","
+                    + "\"tackles\":\"" + player.getTackles() + "\","
+                    + "\"blocks\":\"" + player.getBlocks() + "\","
+                    + "\"intercepts\":\"" + player.getIntercepts() + "\","
+                    + "\"clearances\":\"" + player.getClearances() + "\","
+                    + "\"pen_missed\":\"" + 0 + "\","
+                    + "\"pen_scored\":\"" + 0 + "\""
+                    + "}";
+            
+            
+            System.out.println(jsonInputString);
+            
+            try(OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);           
+            }
+            
+            try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                  StringBuilder response = new StringBuilder();
+                  String responseLine = null;
+                  while ((responseLine = br.readLine()) != null) {
+                      response.append(responseLine.trim());
+                  }
 
-            preparedStmt.setInt(16, player.getCrossAccuracy());
-
-            preparedStmt.setInt(17, player.getYellowcards());
-
-            preparedStmt.setInt(18, player.getRedcards());
-
-            preparedStmt.setInt(19, player.getYellowRedcards());
-
-            preparedStmt.setInt(20, player.getOffsides());
-
-            preparedStmt.setInt(21, player.getPenSaved());
-
-            preparedStmt.setInt(22, player.getPenMissed());
-
-            preparedStmt.setInt(23, 0);
-
-            preparedStmt.setInt(24, player.getTackles());
-
-            preparedStmt.setInt(25, player.getBlocks());
-
-            preparedStmt.setInt(26, player.getIntercepts());
-       
-            preparedStmt.setInt(27, player.getClearances());
-
-            preparedStmt.execute();
-        }catch (SQLException ex) {
-
+                  
+              }
+            
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
