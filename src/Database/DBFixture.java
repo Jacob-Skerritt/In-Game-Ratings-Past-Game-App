@@ -107,7 +107,7 @@ public class DBFixture {
                     + "}";
             
             
-            System.out.println(jsonInputString);
+            //System.out.println(jsonInputString);
             
             try(OutputStream os = con.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
@@ -146,7 +146,7 @@ public class DBFixture {
             con.setRequestProperty("Content-Type", "application/json; utf-8");
             con.setRequestProperty("Accept", "application/json");
             con.setDoOutput(true);
-            String jsonInputString = "{\"id\": \" "+ fixtureId +  "\", \"fixture_status\": \" " + status + "\"}";
+            String jsonInputString = "{\"id\": \""+ fixtureId +  "\", \"fixture_status\": \"" + status + "\"}";
             
             try(OutputStream os = con.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
