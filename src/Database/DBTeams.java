@@ -28,83 +28,78 @@ import pastgameapp.PastGameApp;
 public class DBTeams {
     
     
-    public static void addTeam(Connection db, Team team, int fixtureId){
+    public static void addTeam( Team team, int fixtureId){
+        
+        
         
         try {
-            // the mysql insert statement
-            String query = " insert into fixtures_teams(fixture_id, team_id, winning_team, home_team, score, pen_score, colour, formation, total_shots,"
-                    + " shots_on_goal, shots_blocked, total_passes, accurate_passes, total_attacks, dangerous_attacks, fouls, corners,"
-                    + " offsides, possessiontime, yellowcards, redcards, yellowredcards, saves, substitutions, penalties)"
-                    + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            int home = 0;
+            if(team.getHomeTeam())
+                home = 1;
 
+            
+            URL url = new URL ("http://mysql03.comp.dkit.ie/D00196117/in_game_ratings_api/fixture_team/create.php");
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            String jsonInputString = "{"
+                    + "\"fixture_id\":\""+ fixtureId +  "\","
+                    + "\"team_id\":\"" + team.getTeamId() + "\","
+                    + "\"winning_team\":\"" + team.getWinningTeam()+ "\","
+                    + "\"home_team\":\"" + home + "\","
+                    + "\"score\":\"" +  team.getScore() + "\","
+                    + "\"pen_score\":\"" + team.getPenScore() + "\","
+                    + "\"colour\":\"" + team.getColour() + "\","
+                    + "\"formation\":\"" + team.getFormation() + "\","
+                    + "\"total_shots\":\"" + 0+ "\","
+                    + "\"shots_on_goal\":\"" + 0+ "\","
+                    + "\"shots_blocked\":\"" + 0+ "\","
+                    + "\"total_passes\":\"" + 0 + "\","
+                    + "\"accurate_passes\":\"" + 0 + "\","
+                    + "\"total_attacks\":\"" +  0 + "\","
+                    + "\"dangerous_attacks\":\"" + 0 + "\","
+                    + "\"fouls\":\"" +0+ "\","
+                    + "\"corners\":\"" +  0 + "\","
+                    + "\"offsides\":\"" + 0 + "\","
+                    + "\"possessiontime\":\"" + 0 + "\","
+                    + "\"yellowcards\":\"" + team.getYellowcards() + "\","
+                    + "\"redcards\":\"" + team.getRedcards() + "\","
+                    + "\"yellowredcards\":\"" + 0 + "\","
+                    + "\"saves\":\"" + 0 + "\","
+                    + "\"substitutions\":\"" + 0 + "\","
+                    + "\"penalties\":\"" + 0 + "\""
+                    + "}";
+            
+            
+            //System.out.println(jsonInputString);
+            
+            try(OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);           
+            }
+            
+            try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                  StringBuilder response = new StringBuilder();
+                  String responseLine = null;
+                  while ((responseLine = br.readLine()) != null) {
+                      response.append(responseLine.trim());
+                  }
 
-
-            // create the mysql insert preparedstatement
-            PreparedStatement preparedStmt = db.prepareStatement(query);
-            preparedStmt.setInt(1, fixtureId);
-            preparedStmt.setInt(2, team.getTeamId());
-
-            preparedStmt.setBoolean(3, team.getWinningTeam());
-
-            preparedStmt.setBoolean(4, team.getHomeTeam());
-
-            preparedStmt.setInt(5, team.getScore());
-
-
-            preparedStmt.setInt(6, team.getPenScore());
-
-
-            preparedStmt.setString(7, team.getColour());
-
-
-            preparedStmt.setString(8, team.getFormation());
-
-            preparedStmt.setInt(9, 0);
-
-            preparedStmt.setInt(10, 0);
-
-            preparedStmt.setInt(11, 0);
-
-            preparedStmt.setInt(12, 0);
-
-            preparedStmt.setInt(13, 0);
-
-            preparedStmt.setInt(14, 0);
-
-            preparedStmt.setInt(15, 0);
-
-            preparedStmt.setInt(16, 0);
-
-            preparedStmt.setInt(17, 0);
-
-            preparedStmt.setInt(18, 0);
-
-            preparedStmt.setInt(19, 0);
-
-            preparedStmt.setInt(20, team.getYellowcards());
-
-            preparedStmt.setInt(21, team.getRedcards());
-
-
-            preparedStmt.setInt(22, 0);
-
-            preparedStmt.setInt(23, 0);
-
-
-            preparedStmt.setInt(24, 0);
-
-            preparedStmt.setInt(25, 0); 
-
-
-
-            // execute the preparedstatement
-            preparedStmt.execute();
-        }catch (SQLException ex) {
-
+                  
+              }
+            
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public static void updateScore(int teamId, int fixtureId, int score){
+    public static void updateScore(int teamId, int fixtureId){
 
         try {
             
@@ -114,7 +109,7 @@ public class DBTeams {
             con.setRequestProperty("Content-Type", "application/json; utf-8");
             con.setRequestProperty("Accept", "application/json");
             con.setDoOutput(true);
-            String jsonInputString = "{\"id\": \" "+ fixtureId +  "\", \"score\": \" " + score + "\", \"team_id\": \" " + teamId + "\"}";
+            String jsonInputString = "{\"fixture_id\": \" "+ fixtureId +  "\", \"team_id\": \" " + teamId + "\"}";
             
             try(OutputStream os = con.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");

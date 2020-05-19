@@ -74,92 +74,70 @@ public class PastGameApp extends TimerTask {
         int time = gameTime;
         int minute;
         int second;
-//        
-//        try {
+        
+        try {
 
             second = time % 60;
             minute = time/60;
 
-            //if(!started){
-               // started = true;
+            if(!started){
+                started = true;
                 getPastFixtureData();
-        try {
-            this.fixture = parseFixtureData();
-            //System.out.println(DBEvents.determineEventId());
-            //System.out.println(DBFixture.determineFixtureId());
+                
+                this.fixture = parseFixtureData();
+                
+                reverseSubstitutions(this.fixture);
+
+                DBFixture.addFixture(fixture);
+                  
+
+
+                DBTeams.addTeam(fixture.getHomeTeam(),fixture.getId() );
+                
+                DBTeams.addTeam(fixture.getAwayTeam(), fixture.getId());
+                  
+                for (Player player : this.fixture.getHomeTeam().getPlayers()) {
+                 DBPlayers.addPlayer(player,fixture.getId());
+                }
+                for (Player player : this.fixture.getAwayTeam().getPlayers()) {
+                 DBPlayers.addPlayer(player,fixture.getId());
+                }
+
+                for (Event evnt : this.fixture.getEvents()) {
+                    if(evnt.getMinute() <= startTime){
+                        DBEvents.addEvent( evnt);
+                        event++;
+                    }
+                }
+            }
             
-            //System.out.println(DBFixture.determineFixtureId());   
-            //DBTeams.updateScore(9, 11867481,10);
-            //System.out.println(DBPlayers.getPlayerFormationPosition(297,11867481));
-            //DBPlayers.setPlayerFormationPosition(911,11867481,2);
-//
-//            LocalDate date = LocalDate.now();
-//            if(testTest){
-//               Player player2 = new Player(294,"b","b","b","b",1,'M', "lineup", 20, false, 1,"ire",date, "wer", "wer","wer",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-//               DBPlayers.addPlayer(player2,11867481);
-//            testTest = false;
-//            }
+            if(minute == this.fixture.getEvents().get(event).getMinute() && second == 0){
+                    if(event != this.fixture.getEvents().size()-1 ){
+                        
+                        DBEvents.addEvent(this.fixture.getEvents().get(event));
+                        event++;
+                    }
+                }
+            
+            if(startTime!= 45 && minute == 45 && second == 0){
+                DBFixture.updateStatus(this.fixture.getId(), "HT");
+                Thread.sleep(60*15*1000);
+                DBFixture.updateStatus(this.fixture.getId(), "LIVE");
 
-            //Event event1 = new Event(4,11867481,9,911,"J, Walker",911,3,"yellowcard",2 );
-            //DBEvents.addEvent(event1);
+            }
+            
+            if(minute >= this.pastFixture.getInt("time_minute")){
+                DBFixture.updateStatus(this.fixture.getId(), "FT");
+                timer.cancel();
 
+            }
+            
+            gameTime++;
+            DBFixture.updateTime(this.fixture.getId(), minute, second);
             
         } catch (Exception ex) {
             Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-               // reverseSubstitutions(this.fixture);
-
-//                DBFixture.addFixture(fixture);
-                  
-
-//                  
-//                DBTeams.addTeam(db, fixture.getHomeTeam(), fixture.getId());
-//                DBTeams.addTeam(db, fixture.getAwayTeam(), fixture.getId());
-//                  
-//                for (Player player : this.fixture.getHomeTeam().getPlayers()) {
-//                 DBPlayers.addPlayer(db,  player,fixture.getId());
-//                }
-//                for (Player player : this.fixture.getAwayTeam().getPlayers()) {
-//                 DBPlayers.addPlayer(db,  player,fixture.getId());
-//                }
-//
-//                for (Event evnt : this.fixture.getEvents()) {
-//                    if(evnt.getMinute() <= startTime){
-//                        DBEvents.addEvent(db, evnt);
-//                        event++;
-//                    }
-//                }
-//            }
-//            
-//            if(minute == this.fixture.getEvents().get(event).getMinute() && second == 0){
-//                    if(event != this.fixture.getEvents().size()-1 ){
-//                        
-//                        DBEvents.addEvent(db, this.fixture.getEvents().get(event));
-//                        event++;
-//                    }
-//                }
-//            
-//            if(startTime!= 45 && minute == 45 && second == 0){
-//                DBFixture.updateStatus(this.fixture.getId(), "HT");
-//                Thread.sleep(60*15*1000);
-//                DBFixture.updateStatus(this.fixture.getId(), "LIVE");
-//
-//            }
-//            
-//            if(minute >= this.pastFixture.getInt("time_minute")){
-//                DBFixture.updateStatus(this.fixture.getId(), "FT");
-//                timer.cancel();
-//
-//            }
-//            
-//            gameTime++;
-//            DBFixture.updateTime(this.fixture.getId(), minute, second);
-//            
-//        } catch (SQLException | PropertyVetoException ex) {
-//            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            Logger.getLogger(PastGameApp.class.getName()).log(Level.SEVERE, null, ex);
-//        }
 
     }
     
@@ -191,6 +169,7 @@ public class PastGameApp extends TimerTask {
                   }
 
                   this.pastFixture = new JSONObject(response.toString());
+
               }
             
             
@@ -225,10 +204,10 @@ public class PastGameApp extends TimerTask {
         tempFixture.setAddedTime(pastFixture.getInt("added_time"));
         tempFixture.setExtraTime(pastFixture.getInt("extra_time"));
         tempFixture.setInjuryTime(pastFixture.getInt("injury_time"));
-       // tempFixture.setEvents(parseEventData(db,pastFixture.getJSONArray("events"), tempFixture.getId()));
-        //tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners"), tempFixture.getId()));
-        //tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
-        //tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam"))); 
+        tempFixture.setEvents(parseEventData(pastFixture.getJSONArray("events"), tempFixture.getId()));
+        tempFixture.setCorners(parseCornerData(pastFixture.getJSONArray("corners"), tempFixture.getId()));
+        tempFixture.setHomeTeam(parseTeamData(pastFixture.getJSONObject("localteam")));
+        tempFixture.setAwayTeam(parseTeamData(pastFixture.getJSONObject("visitorteam"))); 
         
        
         
@@ -314,12 +293,13 @@ public class PastGameApp extends TimerTask {
         return players;
     }
     
-    public ArrayList<Event> parseEventData(Connection db,JSONArray eventData, int fixtureId) throws Exception{
+    public ArrayList<Event> parseEventData(JSONArray eventData, int fixtureId) throws Exception{
         ArrayList<Event> events = new ArrayList<>();
         Event tempEvent;
         
         int eventId = DBEvents.determineEventId();
         for(int i = 0; i < eventData.length();i++){
+            
             JSONObject temp = (JSONObject) eventData.get(i);
             tempEvent  = new Event();
             tempEvent.setId(eventId);

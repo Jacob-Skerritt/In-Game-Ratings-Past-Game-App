@@ -70,7 +70,7 @@ public class DBPlayers {
                     + "}";
             
             
-            System.out.println(jsonInputString);
+            //System.out.println(jsonInputString);
             
             try(OutputStream os = con.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
